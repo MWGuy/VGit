@@ -23,7 +23,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:8.0.0'
-    implementation 'com.graphql-java-kickstart:graphiql-spring-boot-starter:8.0.0'
+    implementation 'com.graphql-java-kickstart:playground-spring-boot-starter:8.0.0'
     implementation 'io.leangen.graphql:spqr:0.10.0'
     implementation 'commons-io:commons-io:2.6'
 
