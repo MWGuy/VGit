@@ -1,0 +1,28 @@
+type User {
+    id: ID!
+    email: String!
+    userName: String!
+    realName: String!
+    banned: Boolean!
+    description: String
+}
+
+input UserInfoInput {
+    email: String!
+    realName: String!
+    description: String
+}
+
+input AuthorizationCredentials {
+    userName: String!
+    password: String!
+}
+
+type Query {
+    ping: String!
+    userMe: User!
+}
+
+type Mutation {
+    registerUser(info: UserInfoInput, credentials: AuthorizationCredentials): User!
+}

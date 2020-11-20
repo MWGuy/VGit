@@ -1,22 +1,28 @@
 package com.mwguy.vgit.utils;
 
+import com.mwguy.vgit.dao.UserDao;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public class Authorization {
     private static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
 
-    public static UserDetails getCurrentUser(boolean allowAnonymousUser) {
-        Object userDetails = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (userDetails == null) {
+    public static UserDao getCurrentUser(boolean allowAnonymousUser) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
             throw new BadCredentialsException(UNAUTHORIZED_MESSAGE);
         }
 
-        if (!allowAnonymousUser && userDetails == "anonymousUser") {
-            throw new BadCredentialsException(UNAUTHORIZED_MESSAGE);
+        Object userDetails = authentication.getPrincipal();
+        if (userDetails == "anonymousUser") {
+            if (!allowAnonymousUser) {
+                throw new BadCredentialsException(UNAUTHORIZED_MESSAGE);
+            } else {
+                return null;
+            }
         }
 
-        return (UserDetails) userDetails;
+        return (UserDao) userDetails;
     }
 }

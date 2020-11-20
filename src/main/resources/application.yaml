@@ -1,0 +1,31 @@
+spring:
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/vgit}
+
+graphql:
+  servlet:
+    mapping: /graphql
+    enabled: true
+    corsEnabled: false
+    exception-handlers-enabled: true
+    contextSetting: PER_REQUEST_WITH_INSTRUMENTATION
+
+graphiql:
+  mapping: /graphiql
+  endpoint:
+    graphql: /graphql
+    subscriptions: /subscriptions
+  subscriptions:
+    timeout: 30
+    reconnect: false
+  static:
+    basePath: /
+  enabled: true
+  pageTitle: GraphiQL
+  cdn:
+    enabled: true
+    version: 0.13.0

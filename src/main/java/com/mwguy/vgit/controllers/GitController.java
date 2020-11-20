@@ -28,6 +28,7 @@ public class GitController {
             @PathVariable("path") String path,
             HttpServletResponse response
     ) throws IOException, InterruptedException {
+        Authorization.getCurrentUser(false);
         Git.GitPackType packType = Git.GitPackType.of(service);
         OutputStream outputStream = response.getOutputStream();
         outputStream.write((packType.getMagic() + " service=" + packType.getName() + "\n0000").getBytes());
@@ -49,6 +50,7 @@ public class GitController {
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException, InterruptedException {
+        Authorization.getCurrentUser(false);
         Process process = git.statelessRpc()
                 .packType(Git.GitPackType.UPLOAD_PACK)
                 .repository(namespace + "/" + path)
@@ -65,6 +67,7 @@ public class GitController {
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException, InterruptedException {
+        Authorization.getCurrentUser(false);
         Process process = git.statelessRpc()
                 .packType(Git.GitPackType.RECEIVE_PACK)
                 .repository(namespace + "/" + path)
