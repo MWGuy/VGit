@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Set;
 
 @Document("users")
 @Getter
@@ -41,6 +42,9 @@ public class UserDao implements UserDetails {
 
     @NonNull
     private Boolean banned;
+
+    @NonNull
+    private Set<String> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

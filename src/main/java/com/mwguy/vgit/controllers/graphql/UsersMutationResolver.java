@@ -1,6 +1,5 @@
 package com.mwguy.vgit.controllers.graphql;
 
-import com.mwguy.vgit.dao.UserDao;
 import com.mwguy.vgit.exceptions.UsersException;
 import com.mwguy.vgit.service.UsersService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
@@ -14,8 +13,14 @@ public class UsersMutationResolver implements GraphQLMutationResolver {
         this.usersService = usersService;
     }
 
-    public UserDao registerUser(UsersService.UserInfoInput info,
-                                UsersService.AuthorizationCredentials credentials) throws UsersException {
+    public UsersService.AuthorizationResponse registerUser(UsersService.UserInfoInput info,
+                                                           UsersService.AuthorizationCredentials credentials)
+            throws UsersException {
         return usersService.registerUser(info, credentials);
+    }
+
+    public UsersService.AuthorizationResponse authenticateUser(UsersService.AuthorizationCredentials credentials)
+        throws UsersException {
+        return usersService.authenticateUser(credentials);
     }
 }

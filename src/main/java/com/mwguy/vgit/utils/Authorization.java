@@ -1,8 +1,10 @@
 package com.mwguy.vgit.utils;
 
 import com.mwguy.vgit.dao.UserDao;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class Authorization {
@@ -24,5 +26,19 @@ public class Authorization {
         }
 
         return (UserDao) userDetails;
+    }
+
+    public static AbstractAuthenticationToken createAuthenticationToken(UserDao userDao) {
+        return new AbstractAuthenticationToken(AuthorityUtils.NO_AUTHORITIES) {
+            @Override
+            public Object getCredentials() {
+                return null;
+            }
+
+            @Override
+            public Object getPrincipal() {
+                return userDao;
+            }
+        };
     }
 }

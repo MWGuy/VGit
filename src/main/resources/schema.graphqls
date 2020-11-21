@@ -23,6 +23,12 @@ type Query {
     userMe: User!
 }
 
+type AuthorizationResponse {
+    user: User!
+    token: String!
+}
+
 type Mutation {
-    registerUser(info: UserInfoInput, credentials: AuthorizationCredentials): User!
+    registerUser(info: UserInfoInput, credentials: AuthorizationCredentials): AuthorizationResponse!
+    authenticateUser(credentials: AuthorizationCredentials): AuthorizationResponse!
 }

@@ -25,7 +25,7 @@ public class GitController {
             @PathVariable("namespace") String namespace,
             @PathVariable("path") String path,
             HttpServletResponse response
-    ) throws IOException, InterruptedException {
+    ) throws IOException {
         Authorization.getCurrentUser(false);
         Git.GitPackType packType = Git.GitPackType.of(service);
         response.setHeader("Content-Type", packType.getMediaType().toString());
@@ -50,7 +50,7 @@ public class GitController {
             @PathVariable("path") String path,
             HttpServletRequest request,
             HttpServletResponse response
-    ) throws IOException, InterruptedException {
+    ) throws IOException {
         Authorization.getCurrentUser(false);
         response.setHeader("Content-Type", Git.GitPackType.RECEIVE_PACK.getMediaType().toString());
         gitService.receivePack(response.getOutputStream(), request.getInputStream(), namespace + "/" + path);
