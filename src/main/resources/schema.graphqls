@@ -1,3 +1,14 @@
+enum AccessPermission {
+    PUBLIC
+    PRIVATE
+    INTERNAL
+}
+
+enum RepositoryPathType {
+    USER
+    GROUP
+}
+
 type User {
     id: ID!
     email: String!
@@ -5,6 +16,24 @@ type User {
     realName: String!
     banned: Boolean!
     description: String
+}
+
+type RepositoryPath {
+    name: String!
+    namespace: String!
+    type: RepositoryPathType!
+}
+
+type Repository {
+    id: ID!
+    path: RepositoryPath!
+    accessPermission: AccessPermission!
+    description: String
+}
+
+type AuthorizationResponse {
+    user: User!
+    token: String!
 }
 
 input UserInfoInput {
@@ -18,14 +47,20 @@ input AuthorizationCredentials {
     password: String!
 }
 
+input RepositoryPathInput {
+    name: String!
+    namespace: String!
+}
+
+input CreateRepositoryInput {
+    path: RepositoryPathInput!
+    accessPermission: AccessPermission!
+    description: String
+}
+
 type Query {
     ping: String!
     userMe: User!
-}
-
-type AuthorizationResponse {
-    user: User!
-    token: String!
 }
 
 type Mutation {
@@ -34,4 +69,6 @@ type Mutation {
 
     deleteToken: Boolean!
     deleteAllTokens: Boolean!
+
+    createRepository(input: CreateRepositoryInput): Repository!
 }

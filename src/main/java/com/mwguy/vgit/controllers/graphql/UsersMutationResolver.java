@@ -23,7 +23,7 @@ public class UsersMutationResolver implements GraphQLMutationResolver {
     }
 
     public UsersService.AuthorizationResponse authenticateUser(UsersService.AuthorizationCredentials credentials)
-        throws UsersException {
+            throws UsersException {
         return usersService.authenticateUser(credentials);
     }
 

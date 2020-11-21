@@ -8,7 +8,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class Authorization {
-    private static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
+    public static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
 
     public static UserDao getCurrentUser(boolean allowAnonymousUser) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -48,7 +48,7 @@ public class StatelessRpcBuilder implements GitProcessBuilder {
         }
 
         args.add(this.git.getBaseDirectory().resolve(this.repository).toString());
-        Process process = Processes.startGitProcess(args);
+        Process process = Processes.startGitProcess(args, null);
         if (this.inputStream != null) {
             try {
                 process.getOutputStream().write(this.inputStream.readAllBytes());

@@ -15,9 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Set;
 
-@Document("users")
 @Getter
 @Setter
+@Document("users")
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDao implements UserDetails {
