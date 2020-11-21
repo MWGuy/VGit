@@ -31,4 +31,7 @@ type AuthorizationResponse {
 type Mutation {
     registerUser(info: UserInfoInput, credentials: AuthorizationCredentials): AuthorizationResponse!
     authenticateUser(credentials: AuthorizationCredentials): AuthorizationResponse!
+
+    deleteToken: Boolean!
+    deleteAllTokens: Boolean!
 }

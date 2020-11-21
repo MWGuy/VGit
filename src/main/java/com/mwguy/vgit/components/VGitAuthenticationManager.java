@@ -49,7 +49,7 @@ public class VGitAuthenticationManager implements AuthenticationManager {
         }
 
         if (passwordEncoder.matches(password, userDao.getPassword())) {
-            return Authorization.createAuthenticationToken(userDao);
+            return Authorization.createAuthenticationToken(userDao, authentication.getCredentials());
         }
 
         throw new BadCredentialsException("Invalid username or password");
@@ -66,6 +66,6 @@ public class VGitAuthenticationManager implements AuthenticationManager {
             throw new LockedException("Account banned");
         }
 
-        return Authorization.createAuthenticationToken(userDao);
+        return Authorization.createAuthenticationToken(userDao, authentication.getToken());
     }
 }

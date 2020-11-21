@@ -22,6 +22,7 @@ public class UsersService {
     public static final String USER_NOT_FOUND = "User not found";
     public static final String PROVIDED_INVALID_EMAIL = "Provided invalid email";
     public static final String PROVIDED_INVALID_PASSWORD = "Provided invalid password";
+    public static final String PROVIDED_INVALID_TOKEN = "Provided invalid token";
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
@@ -103,5 +104,19 @@ public class UsersService {
         String token = UUID.randomUUID().toString().replace("-", "");
         userDao.getTokens().add(token);
         return new AuthorizationResponse(usersRepository.save(userDao), token);
+    }
+
+    public UserDao deleteToken(UserDao userDao, String token) {
+        if (!userDao.getTokens().contains(token)) {
+            throw new UsersException(PROVIDED_INVALID_TOKEN);
+        }
+
+        userDao.getTokens().remove(token);
+        return usersRepository.save(userDao);
+    }
+
+    public UserDao deleteAllTokens(UserDao userDao) {
+        userDao.setTokens(new HashSet<>());
+        return usersRepository.save(userDao);
     }
 }

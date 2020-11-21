@@ -28,11 +28,25 @@ public class Authorization {
         return (UserDao) userDetails;
     }
 
-    public static AbstractAuthenticationToken createAuthenticationToken(UserDao userDao) {
+    public static String getCurrentToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new BadCredentialsException(UNAUTHORIZED_MESSAGE);
+        }
+
+        Object credentials = authentication.getCredentials();
+        if (credentials instanceof String) {
+            return (String) credentials;
+        }
+
+        return null;
+    }
+
+    public static AbstractAuthenticationToken createAuthenticationToken(UserDao userDao, Object credentials) {
         return new AbstractAuthenticationToken(AuthorityUtils.NO_AUTHORITIES) {
             @Override
             public Object getCredentials() {
-                return null;
+                return credentials;
             }
 
             @Override
