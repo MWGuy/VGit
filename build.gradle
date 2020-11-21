@@ -25,7 +25,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:8.0.0'
     implementation 'com.graphql-java-kickstart:playground-spring-boot-starter:8.0.0'
-    implementation 'io.leangen.graphql:spqr:0.10.0'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
