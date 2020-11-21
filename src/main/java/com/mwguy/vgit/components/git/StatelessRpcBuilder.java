@@ -2,7 +2,6 @@ package com.mwguy.vgit.components.git;
 
 import com.mwguy.vgit.exceptions.GitException;
 import com.mwguy.vgit.utils.Processes;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
