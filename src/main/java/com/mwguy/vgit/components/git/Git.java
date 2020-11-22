@@ -1,8 +1,12 @@
 package com.mwguy.vgit.components.git;
 
+import com.mwguy.vgit.VGitApplication;
 import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.exceptions.GitException;
 import com.mwguy.vgit.utils.Processes;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 
@@ -102,5 +106,9 @@ public class Git {
         }
 
         return Processes.startGitProcess(command, directory);
+    }
+
+    public GitLog log(String repository) {
+        return new GitLog(this, repository);
     }
 }

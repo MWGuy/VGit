@@ -18,6 +18,20 @@ type User {
     description: String
 }
 
+type GitUserInfo {
+    name: String!
+    email: String!
+    date: Int!
+}
+
+type GitCommit {
+    abbreviatedCommitHash: String!
+    abbreviatedTreeHash: String!
+    author: GitUserInfo!
+    committer: GitUserInfo!
+    subject: String!
+}
+
 type RepositoryPath {
     name: String!
     namespace: String!
@@ -29,6 +43,7 @@ type Repository {
     path: RepositoryPath!
     accessPermission: AccessPermission!
     description: String
+    commits(pagination: PaginationInput!): [GitCommit]!
 }
 
 type AuthorizationResponse {
@@ -56,6 +71,11 @@ input CreateRepositoryInput {
     path: RepositoryPathInput!
     accessPermission: AccessPermission!
     description: String
+}
+
+input PaginationInput {
+    skip: Int!
+    limit: Int!
 }
 
 type Query {

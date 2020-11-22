@@ -1,5 +1,8 @@
 package com.mwguy.vgit.dao;
 
+import com.mwguy.vgit.VGitApplication;
+import com.mwguy.vgit.components.git.Git;
+import com.mwguy.vgit.components.git.GitLog;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -83,5 +88,18 @@ public class RepositoryDao {
 
     public String toRepositoryPath() {
         return path.getNamespace() + "/" + path.getName();
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PaginationInput {
+        private Integer skip;
+        private Integer limit;
+    }
+
+    public List<GitLog.GitCommit> getCommits(PaginationInput pagination) throws IOException {
+        Git git = VGitApplication.context.getBean(Git.class);
+        return git.log(this.toRepositoryPath()).parse(pagination.getSkip(), pagination.getLimit());
     }
 }

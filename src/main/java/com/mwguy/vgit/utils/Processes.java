@@ -16,7 +16,7 @@ public class Processes {
     }
 
     public static Process startGitProcess(List<String> command, @Nullable File directory) throws GitException {
-        log.info(String.join(" ", command));
+        log.debug(String.join(" ", command));
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         if (directory != null) {
             processBuilder.directory(directory);
