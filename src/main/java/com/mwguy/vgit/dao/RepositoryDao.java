@@ -98,7 +98,7 @@ public class RepositoryDao {
         private Integer limit;
     }
 
-    public List<GitLog.GitCommit> getCommits(PaginationInput pagination) throws IOException {
+    public List<GitLog.GitCommit> getCommits(PaginationInput pagination) throws IOException, InterruptedException {
         Git git = VGitApplication.context.getBean(Git.class);
         return git.log(this.toRepositoryPath()).parse(pagination.getSkip(), pagination.getLimit());
     }

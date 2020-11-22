@@ -7,8 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,6 +40,7 @@ public class GitLog {
         private GitUserInfo author;
         private GitUserInfo committer;
         private String subject;
+        private String body;
     }
 
     protected GitLog(Git git, String repository) {
@@ -43,28 +48,30 @@ public class GitLog {
         this.repository = repository;
     }
 
-    public List<GitCommit> parse(Integer skip, Integer limit) throws IOException {
+    public List<GitCommit> parse(Integer skip, Integer limit) throws IOException, InterruptedException {
         ArrayList<String> command = new ArrayList<>();
-        ArrayList<GitCommit> commits = new ArrayList<>();
 
         command.add("git");
         command.add("log");
         command.add("--skip");
         command.add(skip.toString());
         command.add("-" + limit.toString());
-        command.add("--pretty=format:{^^^^abbreviatedCommitHash^^^^: ^^^^%h^^^^, ^^^^abbreviatedTreeHash^^^^: ^^^^%t^^^^, ^^^^author^^^^: {^^^^name^^^^: ^^^^%an^^^^, ^^^^email^^^^: ^^^^%ae^^^^, ^^^^date^^^^: %at}, ^^^^committer^^^^: {^^^^name^^^^: ^^^^%cn^^^^, ^^^^email^^^^: ^^^^%ce^^^^, ^^^^date^^^^: %ct}, ^^^^subject^^^^: ^^^^%s^^^^}");
+        command.add("--pretty=format:{^^^^abbreviatedCommitHash^^^^: ^^^^%h^^^^, ^^^^abbreviatedTreeHash^^^^: ^^^^%t^^^^, ^^^^author^^^^: {^^^^name^^^^: ^^^^%an^^^^, ^^^^email^^^^: ^^^^%ae^^^^, ^^^^date^^^^: %at}, ^^^^committer^^^^: {^^^^name^^^^: ^^^^%cn^^^^, ^^^^email^^^^: ^^^^%ce^^^^, ^^^^date^^^^: %ct}, ^^^^subject^^^^: ^^^^%s^^^^, ^^^^body^^^^: ^^^^%b^^^^},^&^&^&");
 
         Process process = Processes.startGitProcess(command, git.getBaseDirectory().resolve(repository).toFile());
-        Scanner scanner = new Scanner(process.getInputStream());
+        process.waitFor();
+
+        String output = new String(process.getInputStream().readAllBytes())
+                .replace("\r", "\\\\r")
+                .replace("\n", "\\\\n")
+                .replace("^&^&^&\\\\n", "\n")
+                .replace("\"", "\\\"")
+                .replace("^^^^", "\"");
+
+        output = output.substring(0, output.length() - 7);
+        output = String.format("[%s]", output);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        while (scanner.hasNextLine()) {
-            commits.add(objectMapper.readValue(scanner.nextLine()
-                    .replace("\n", "\\n")
-                    .replace("\"", "\\\"")
-                    .replace("^^^^", "\""), GitCommit.class));
-        }
-
-        return commits;
+        return Arrays.asList(objectMapper.readValue(output, GitCommit[].class));
     }
 }
