@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class Authorization {
     public static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
+    public static final String GIT_HOOK_TRIGGER = "git-hook-trigger";
 
     public static UserDao getCurrentUser(boolean allowAnonymousUser) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -26,6 +27,15 @@ public class Authorization {
         }
 
         return (UserDao) userDetails;
+    }
+
+    public static boolean isGitHookTrigger() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+
+        return authentication.getPrincipal() == GIT_HOOK_TRIGGER;
     }
 
     public static String getCurrentToken() {
@@ -52,6 +62,20 @@ public class Authorization {
             @Override
             public Object getPrincipal() {
                 return userDao;
+            }
+        };
+    }
+
+    public static AbstractAuthenticationToken createHookToken() {
+        return new AbstractAuthenticationToken(AuthorityUtils.NO_AUTHORITIES) {
+            @Override
+            public Object getCredentials() {
+                return null;
+            }
+
+            @Override
+            public Object getPrincipal() {
+                return GIT_HOOK_TRIGGER;
             }
         };
     }

@@ -13,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.Collections;
 
 @Service
@@ -40,7 +41,7 @@ public class RepositoriesService {
     }
 
     public RepositoryDao createNewRepository(CreateRepositoryInput input)
-            throws InterruptedException {
+            throws InterruptedException, IOException {
         UserDao userDao = Authorization.getCurrentUser(false);
         assert userDao != null;
         if (!input.getPath().getNamespace().equals(userDao.getUsername())) {
@@ -54,7 +55,7 @@ public class RepositoriesService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, REPOSITORY_ALREADY_EXISTS);
         }
 
-        git.init(input.path.getNamespace() + "/" + input.getPath().getName()).waitFor();
+        git.init(input.path.getNamespace() + "/" + input.getPath().getName());
         RepositoryDao repositoryDao = new RepositoryDao();
         repositoryDao.setPath(new RepositoryDao.RepositoryPath(
                 input.getPath().getName(),
@@ -74,6 +75,14 @@ public class RepositoriesService {
         RepositoryDao repositoryDao = repositoriesRepository.findByPath_NamespaceAndPath_Name(namespace, name);
         if (repositoryDao == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, REPOSITORY_NOT_FOUND);
+        }
+
+        if (type == RepositoryDao.PermissionType.HOOK_TRIGGER) {
+            if (Authorization.isGitHookTrigger()) {
+                return repositoryDao;
+            } else {
+                throw new BadCredentialsException(PERMISSION_DENIED);
+            }
         }
 
         if (!repositoryDao.checkPermission(type, Authorization.getCurrentUser(true))) {

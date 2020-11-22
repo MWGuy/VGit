@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 
 import java.nio.file.Path;
+import java.util.UUID;
 
 @Configuration
 public class GitConfiguration {
+    public static final String gitHookSecretKey = UUID.randomUUID().toString().replace("-", "");
     private final Environment environment;
 
     public GitConfiguration(Environment environment) {

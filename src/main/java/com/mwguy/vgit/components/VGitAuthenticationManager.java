@@ -1,5 +1,6 @@
 package com.mwguy.vgit.components;
 
+import com.mwguy.vgit.configuration.GitConfiguration;
 import com.mwguy.vgit.dao.UserDao;
 import com.mwguy.vgit.repositories.UsersRepository;
 import com.mwguy.vgit.utils.Authorization;
@@ -57,6 +58,10 @@ public class VGitAuthenticationManager implements AuthenticationManager {
 
     public Authentication authenticateBearerBasic(BearerTokenAuthenticationToken authentication)
             throws AuthenticationException {
+        if (GitConfiguration.gitHookSecretKey.equals(authentication.getToken())) {
+            return Authorization.createHookToken();
+        }
+
         UserDao userDao = usersRepository.findByTokensContains(authentication.getToken());
         if (userDao == null) {
             throw new BadCredentialsException("User not found");

@@ -1,16 +1,13 @@
 package com.mwguy.vgit.components.git;
 
-import com.mwguy.vgit.VGitApplication;
 import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.exceptions.GitException;
 import com.mwguy.vgit.utils.Processes;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -94,7 +91,7 @@ public class Git {
         }
     }
 
-    public Process init(String repository) {
+    public void init(String repository) throws InterruptedException, IOException {
         List<String> command = new ArrayList<>();
         command.add("git");
         command.add("init");
@@ -105,7 +102,22 @@ public class Git {
             directory.mkdirs();
         }
 
-        return Processes.startGitProcess(command, directory);
+        Processes.startGitProcess(command, directory, null).waitFor();
+        File pushHookFile = new File(directory, "hooks/post-receive");
+        pushHookFile.createNewFile();
+        pushHookFile.setWritable(true);
+        pushHookFile.setExecutable(true);
+
+        FileWriter writer = new FileWriter(pushHookFile);
+        writer.write("#!/bin/bash\n" +
+                "curl -H \"Content-Type: text/plain\"" +
+                " -H \"Authorization: Bearer ${VGIT_SECRET}\"" +
+                " -X POST --data-binary @-" +
+                " http://localhost:$VGIT_PORT/$VGIT_REPOSITORY.git/hook/POST_RECEIVE" +
+                " > /dev/null 2> /dev/null\n"
+        );
+        writer.flush();
+        writer.close();
     }
 
     public GitLog log(String repository) {

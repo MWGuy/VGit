@@ -5,6 +5,8 @@ import com.mwguy.vgit.service.RepositoriesService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Component
 public class RepositoriesMutationResolver implements GraphQLMutationResolver {
     private final RepositoriesService repositoriesService;
@@ -14,7 +16,7 @@ public class RepositoriesMutationResolver implements GraphQLMutationResolver {
     }
 
     public RepositoryDao createRepository(RepositoriesService.CreateRepositoryInput input)
-            throws InterruptedException {
+            throws InterruptedException, IOException {
         return repositoriesService.createNewRepository(input);
     }
 }

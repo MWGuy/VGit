@@ -2,10 +2,7 @@ package com.mwguy.vgit.components.git;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mwguy.vgit.utils.Processes;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,8 +13,12 @@ public class GitLog {
     private final Git git;
     private final String repository;
 
+    private String oldTree;
+    private String newTree;
+
     @Getter
     @Setter
+    @ToString
     @AllArgsConstructor
     @NoArgsConstructor
     public static class GitUserInfo {
@@ -28,6 +29,7 @@ public class GitLog {
 
     @Getter
     @Setter
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class GitCommit {
@@ -44,17 +46,43 @@ public class GitLog {
         this.repository = repository;
     }
 
+
+    public GitLog oldTree(String oldTree) {
+        this.oldTree = oldTree;
+        return this;
+    }
+
+    public GitLog newTree(String newTree) {
+        this.newTree = newTree;
+        return this;
+    }
+
     public List<GitCommit> parse(Integer skip, Integer limit) throws IOException, InterruptedException {
         ArrayList<String> command = new ArrayList<>();
 
         command.add("git");
         command.add("log");
-        command.add("--skip");
-        command.add(skip.toString());
-        command.add("-" + limit.toString());
+
+        if (skip != 0) {
+            command.add("--skip");
+            command.add(skip.toString());
+        }
+
+        if (limit != 0) {
+            command.add("-" + limit.toString());
+        }
+
+        if (oldTree != null && newTree != null) {
+            if ("0000000000000000000000000000000000000000".equals(oldTree)) {
+                command.add(newTree);
+            } else {
+                command.add(String.format("%s..%s", oldTree, newTree));
+            }
+        }
+
         command.add("--pretty=format:{^^^^abbreviatedCommitHash^^^^: ^^^^%h^^^^, ^^^^abbreviatedTreeHash^^^^: ^^^^%t^^^^, ^^^^author^^^^: {^^^^name^^^^: ^^^^%an^^^^, ^^^^email^^^^: ^^^^%ae^^^^, ^^^^date^^^^: %at}, ^^^^committer^^^^: {^^^^name^^^^: ^^^^%cn^^^^, ^^^^email^^^^: ^^^^%ce^^^^, ^^^^date^^^^: %ct}, ^^^^subject^^^^: ^^^^%s^^^^, ^^^^body^^^^: ^^^^%b^^^^},^&^&^&");
 
-        Process process = Processes.startGitProcess(command, git.getBaseDirectory().resolve(repository).toFile());
+        Process process = Processes.startGitProcess(command, git.getBaseDirectory().resolve(repository).toFile(), null);
         process.waitFor();
 
         String output = new String(process.getInputStream().readAllBytes())
@@ -64,7 +92,10 @@ public class GitLog {
                 .replace("\"", "\\\"")
                 .replace("^^^^", "\"");
 
-        output = output.substring(0, output.length() - 7);
+        if (output.length() != 0) {
+            output = output.substring(0, output.length() - 7);
+        }
+
         output = String.format("[%s]", output);
 
         ObjectMapper objectMapper = new ObjectMapper();

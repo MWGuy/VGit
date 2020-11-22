@@ -29,7 +29,8 @@ public class RepositoryDao {
 
     public enum PermissionType {
         GIT_PULL,
-        GIT_PUSH
+        GIT_PUSH,
+        HOOK_TRIGGER
     }
 
     public enum RepositoryPathType {

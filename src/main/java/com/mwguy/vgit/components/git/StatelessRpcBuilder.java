@@ -5,6 +5,7 @@ import com.mwguy.vgit.utils.Processes;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class StatelessRpcBuilder implements GitProcessBuilder {
@@ -48,7 +49,7 @@ public class StatelessRpcBuilder implements GitProcessBuilder {
         }
 
         args.add(this.git.getBaseDirectory().resolve(this.repository).toString());
-        Process process = Processes.startGitProcess(args, null);
+        Process process = Processes.startGitProcess(args, null, Collections.singletonMap("VGIT_REPOSITORY", repository));
         if (this.inputStream != null) {
             try {
                 process.getOutputStream().write(this.inputStream.readAllBytes());
