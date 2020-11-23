@@ -6,7 +6,9 @@ import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.service.GitService;
 import com.mwguy.vgit.service.HooksService;
 import com.mwguy.vgit.service.RepositoriesService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +25,14 @@ public class GitController {
     private final GitService gitService;
     private final RepositoriesService repositoriesService;
     private final HooksService hooksService;
+    private final TaskExecutor taskExecutor;
 
-    public GitController(Git git, GitService gitService, RepositoriesService repositoriesService, HooksService hooksService) {
+    public GitController(Git git, GitService gitService, RepositoriesService repositoriesService, HooksService hooksService, TaskExecutor taskExecutor) {
         this.git = git;
         this.gitService = gitService;
         this.repositoriesService = repositoriesService;
         this.hooksService = hooksService;
+        this.taskExecutor = taskExecutor;
     }
 
     @GetMapping("/{namespace}/{path}.git/info/refs")
@@ -88,17 +92,23 @@ public class GitController {
             return;
         }
 
-        String[] input = Objects.requireNonNull(httpEntity.getBody()).trim().split(" ");
-        String oldTree = input[0];
-        String newTree = input[1];
-        String branch = input[2];
+        taskExecutor.execute(() -> {
+            String[] input = Objects.requireNonNull(httpEntity.getBody()).trim().split(" ");
+            String oldTree = input[0];
+            String newTree = input[1];
+            String branch = input[2];
 
-        List<GitLog.GitCommit> commits = git
-                .log(repositoryDao.toRepositoryPath())
-                .oldTree(oldTree)
-                .newTree(newTree)
-                .parse(0, 0);
+            try {
+                List<GitLog.GitCommit> commits = git
+                        .log(repositoryDao.toRepositoryPath())
+                        .oldTree(oldTree)
+                        .newTree(newTree)
+                        .parse(0, 0);
 
-        hooksService.triggerHook(repositoryDao, RepositoryDao.RepositoryHookType.PUSH, commits);
+                hooksService.triggerHook(repositoryDao, RepositoryDao.RepositoryHookType.PUSH, commits);
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
