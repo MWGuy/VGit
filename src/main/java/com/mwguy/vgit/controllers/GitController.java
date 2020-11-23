@@ -4,8 +4,8 @@ import com.mwguy.vgit.components.git.Git;
 import com.mwguy.vgit.components.git.GitLog;
 import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.service.GitService;
+import com.mwguy.vgit.service.HooksService;
 import com.mwguy.vgit.service.RepositoriesService;
-import com.mwguy.vgit.utils.Authorization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,11 +22,13 @@ public class GitController {
     private final Git git;
     private final GitService gitService;
     private final RepositoriesService repositoriesService;
+    private final HooksService hooksService;
 
-    public GitController(Git git, GitService gitService, RepositoriesService repositoriesService) {
+    public GitController(Git git, GitService gitService, RepositoriesService repositoriesService, HooksService hooksService) {
         this.git = git;
         this.gitService = gitService;
         this.repositoriesService = repositoriesService;
+        this.hooksService = hooksService;
     }
 
     @GetMapping("/{namespace}/{path}.git/info/refs")
@@ -83,6 +84,10 @@ public class GitController {
         RepositoryDao repositoryDao = repositoriesService
                 .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.HOOK_TRIGGER);
 
+        if (!hooksService.hasHooks(repositoryDao, RepositoryDao.RepositoryHookType.PUSH)) {
+            return;
+        }
+
         String[] input = Objects.requireNonNull(httpEntity.getBody()).trim().split(" ");
         String oldTree = input[0];
         String newTree = input[1];
@@ -94,6 +99,6 @@ public class GitController {
                 .newTree(newTree)
                 .parse(0, 0);
 
-        System.out.println(commits);
+        hooksService.triggerHook(repositoryDao, RepositoryDao.RepositoryHookType.PUSH, commits);
     }
 }

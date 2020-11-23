@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 
 @Service
 public class RepositoriesService {
@@ -63,6 +64,7 @@ public class RepositoriesService {
                 RepositoryDao.RepositoryPathType.USER));
         repositoryDao.setAccessPermission(input.getAccessPermission());
         repositoryDao.setDescription(input.getDescription());
+        repositoryDao.setHooks(new HashSet<>());
         repositoryDao.setMembersIds(Collections.singleton(userDao.getId()));
         return repositoriesRepository.save(repositoryDao);
     }

@@ -8,10 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -38,6 +41,10 @@ public class RepositoryDao {
         GROUP
     }
 
+    public enum RepositoryHookType {
+        PUSH
+    }
+
     @Getter
     @Setter
     @NoArgsConstructor
@@ -46,6 +53,25 @@ public class RepositoryDao {
         private String name;
         private String namespace;
         private RepositoryPathType type;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RepositoryHookRequestLogEntity {
+        private HttpStatus status;
+        private Date date;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RepositoryHook {
+        private RepositoryHookType type;
+        private URL url;
+        private Set<RepositoryHookRequestLogEntity> requestLog;
     }
 
     @NonNull
@@ -62,6 +88,9 @@ public class RepositoryDao {
 
     @NonNull
     private Set<String> membersIds;
+
+    @NonNull
+    private Set<RepositoryHook> hooks;
 
     public Boolean needAuthorization(PermissionType type) {
         if (type == PermissionType.GIT_PULL) {
