@@ -1,9 +1,9 @@
 package com.mwguy.vgit.service;
 
-import com.mwguy.vgit.VGitRegex;
 import com.mwguy.vgit.dao.UserDao;
 import com.mwguy.vgit.exceptions.UsersException;
 import com.mwguy.vgit.repositories.UsersRepository;
+import com.mwguy.vgit.VGitRegex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

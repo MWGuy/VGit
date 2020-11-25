@@ -1,8 +1,8 @@
 package com.mwguy.vgit.components.git;
 
-import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.exceptions.GitException;
 import com.mwguy.vgit.utils.Processes;
+import com.mwguy.vgit.dao.RepositoryDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 

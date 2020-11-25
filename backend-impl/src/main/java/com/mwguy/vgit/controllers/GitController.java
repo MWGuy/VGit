@@ -1,10 +1,10 @@
 package com.mwguy.vgit.controllers;
 
+import com.mwguy.vgit.service.GitService;
+import com.mwguy.vgit.service.HooksService;
 import com.mwguy.vgit.components.git.Git;
 import com.mwguy.vgit.components.git.GitLog;
 import com.mwguy.vgit.dao.RepositoryDao;
-import com.mwguy.vgit.service.GitService;
-import com.mwguy.vgit.service.HooksService;
 import com.mwguy.vgit.service.RepositoriesService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

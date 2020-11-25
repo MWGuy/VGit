@@ -1,9 +1,9 @@
 package com.mwguy.vgit.service;
 
 import com.mwguy.vgit.components.git.Git;
-import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.dao.UserDao;
 import com.mwguy.vgit.repositories.RepositoriesRepository;
+import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.utils.Authorization;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
