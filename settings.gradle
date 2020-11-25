@@ -1,4 +1,4 @@
 rootProject.name = 'vgit'
 
 include 'backend-impl'
-include 'git-cli-tools'
+include 'git-cli'

@@ -22,7 +22,7 @@ dependencies {
     implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:8.0.0'
     implementation 'com.graphql-java-kickstart:playground-spring-boot-starter:8.0.0'
 
-    implementation project(':git-cli-tools')
+    implementation project(':git-cli')
 
     compileOnly 'org.projectlombok:lombok:1.18.16'
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
