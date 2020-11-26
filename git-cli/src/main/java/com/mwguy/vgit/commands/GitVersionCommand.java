@@ -1,6 +1,6 @@
 package com.mwguy.vgit.commands;
 
-import com.mwguy.vgit.api.GitVersion;
+import com.mwguy.vgit.data.GitVersion;
 import com.mwguy.vgit.exceptions.GitException;
 
 import java.io.IOException;

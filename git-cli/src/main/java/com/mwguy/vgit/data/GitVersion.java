@@ -1,4 +1,4 @@
-package com.mwguy.vgit.api;
+package com.mwguy.vgit.data;
 
 import com.mwguy.vgit.exceptions.GitException;
 import lombok.AllArgsConstructor;

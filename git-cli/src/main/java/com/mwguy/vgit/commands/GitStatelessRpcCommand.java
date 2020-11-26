@@ -1,6 +1,6 @@
 package com.mwguy.vgit.commands;
 
-import com.mwguy.vgit.api.GitPackType;
+import com.mwguy.vgit.data.GitPackType;
 import com.mwguy.vgit.exceptions.GitException;
 import lombok.Builder;
 

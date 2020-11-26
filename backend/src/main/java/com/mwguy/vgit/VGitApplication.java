@@ -14,9 +14,4 @@ public class VGitApplication {
     public static void main(String[] args) {
         context = SpringApplication.run(VGitApplication.class, args);
     }
-
-    @Bean
-    public TaskExecutor taskExecutor() {
-        return new SimpleAsyncTaskExecutor();
-    }
 }

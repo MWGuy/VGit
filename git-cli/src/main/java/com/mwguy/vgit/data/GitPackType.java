@@ -1,4 +1,4 @@
-package com.mwguy.vgit.api;
+package com.mwguy.vgit.data;
 
 public enum GitPackType {
     RECEIVE_PACK("receive-pack", "001f#"), // push
