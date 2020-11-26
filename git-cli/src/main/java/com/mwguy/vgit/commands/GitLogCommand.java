@@ -51,7 +51,7 @@ public class GitLogCommand implements GitCommand<List<GitCommit>> {
             command.add("--branches=" + branch);
         }
 
-        command.add("--pretty=format:{^^^^refs^^^^: { ^^^^commit^^^^: ^^^^%h^^^^, ^^^^tree^^^^: ^^^^%t^^^^ }, ^^^^abbreviatedTreeHash^^^^: , ^^^^author^^^^: {^^^^name^^^^: ^^^^%an^^^^, ^^^^email^^^^: ^^^^%ae^^^^, ^^^^date^^^^: %at}, ^^^^committer^^^^: {^^^^name^^^^: ^^^^%cn^^^^, ^^^^email^^^^: ^^^^%ce^^^^, ^^^^date^^^^: %ct}, ^^^^subject^^^^: ^^^^%s^^^^, ^^^^body^^^^: ^^^^%b^^^^},^&^&^&");
+        command.add("--pretty=format:{^^^^refs^^^^: { ^^^^commit^^^^: ^^^^%h^^^^, ^^^^tree^^^^: ^^^^%t^^^^ }, ^^^^author^^^^: {^^^^name^^^^: ^^^^%an^^^^, ^^^^email^^^^: ^^^^%ae^^^^, ^^^^date^^^^: %at}, ^^^^committer^^^^: {^^^^name^^^^: ^^^^%cn^^^^, ^^^^email^^^^: ^^^^%ce^^^^, ^^^^date^^^^: %ct}, ^^^^subject^^^^: ^^^^%s^^^^, ^^^^body^^^^: ^^^^%b^^^^},^&^&^&");
 
         if (path != null) {
             command.add("--");

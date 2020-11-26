@@ -3,6 +3,7 @@ package com.mwguy.vgit.service;
 import com.mwguy.vgit.Git;
 import com.mwguy.vgit.configuration.GitConfiguration;
 import com.mwguy.vgit.data.GitPackType;
+import com.mwguy.vgit.exceptions.GitException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class GitService {
     }
 
     public void infoRefs(OutputStream outputStream, GitPackType packType, String repository)
-            throws IOException {
+            throws IOException, GitException {
         outputStream.write((packType.getMagic() + " service=" + packType.getName() + "\n0000").getBytes());
 
         git.statelessRpc()
@@ -31,7 +32,7 @@ public class GitService {
     }
 
     public void uploadPack(OutputStream outputStream, InputStream inputStream, String repository)
-            throws IOException {
+            throws IOException, GitException {
         git.statelessRpc()
                 .repository(GitConfiguration.resolveGitPath(repository))
                 .packType(GitPackType.UPLOAD_PACK)
@@ -42,7 +43,7 @@ public class GitService {
     }
 
     public void receivePack(OutputStream outputStream, InputStream inputStream, String repository)
-            throws IOException {
+            throws IOException, GitException {
         git.statelessRpc()
                 .repository(GitConfiguration.resolveGitPath(repository))
                 .packType(GitPackType.RECEIVE_PACK)

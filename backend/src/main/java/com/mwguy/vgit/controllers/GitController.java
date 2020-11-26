@@ -40,7 +40,7 @@ public class GitController {
             @PathVariable("namespace") String namespace,
             @PathVariable("path") String path,
             HttpServletResponse response
-    ) throws IOException {
+    ) throws IOException, GitException {
         GitPackType packType = GitPackType.of(service);
         RepositoryDao repositoryDao = repositoriesService
                 .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.getByPackType(packType));
@@ -55,7 +55,7 @@ public class GitController {
             @PathVariable("path") String path,
             HttpServletRequest request,
             HttpServletResponse response
-    ) throws IOException {
+    ) throws IOException, GitException {
         RepositoryDao repositoryDao = repositoriesService
                 .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.GIT_PULL);
 
@@ -69,7 +69,7 @@ public class GitController {
             @PathVariable("path") String path,
             HttpServletRequest request,
             HttpServletResponse response
-    ) throws IOException {
+    ) throws IOException, GitException {
         RepositoryDao repositoryDao = repositoriesService
                 .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.GIT_PUSH);
 

@@ -26,7 +26,7 @@ public class GitCommit {
     public static class GitUserInfo {
         private String name;
         private String email;
-        private Date date;
+        private Integer date;
     }
 
     private Refs refs;
