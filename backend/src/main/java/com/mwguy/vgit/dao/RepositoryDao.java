@@ -1,8 +1,11 @@
 package com.mwguy.vgit.dao;
 
+import com.mwguy.vgit.Git;
 import com.mwguy.vgit.VGitApplication;
-import com.mwguy.vgit.components.git.Git;
-import com.mwguy.vgit.components.git.GitLog;
+import com.mwguy.vgit.configuration.GitConfiguration;
+import com.mwguy.vgit.data.GitCommit;
+import com.mwguy.vgit.data.GitPackType;
+import com.mwguy.vgit.exceptions.GitException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +35,14 @@ public class RepositoryDao {
     public enum PermissionType {
         GIT_PULL,
         GIT_PUSH,
-        HOOK_TRIGGER
+        HOOK_TRIGGER;
+
+        public static PermissionType getByPackType(GitPackType type) {
+            return switch (type) {
+                case RECEIVE_PACK -> GIT_PUSH;
+                case UPLOAD_PACK -> GIT_PULL;
+            };
+        }
     }
 
     public enum RepositoryPathType {
@@ -128,8 +137,13 @@ public class RepositoryDao {
         private Integer limit;
     }
 
-    public List<GitLog.GitCommit> getCommits(PaginationInput pagination) throws IOException, InterruptedException {
+    public List<GitCommit> getCommits(PaginationInput pagination) throws GitException {
         Git git = VGitApplication.context.getBean(Git.class);
-        return git.log(this.toRepositoryPath()).parse(pagination.getSkip(), pagination.getLimit());
+        return git.log()
+                .repository(GitConfiguration.resolveGitPath(this.toRepositoryPath()))
+                .skip(pagination.getSkip())
+                .maxCount(pagination.getLimit())
+                .build()
+                .call();
     }
 }

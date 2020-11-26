@@ -17,6 +17,7 @@ public class GitLogCommand implements GitCommand<List<GitCommit>> {
 
     @Builder.Default private final Integer maxCount = 0;
     @Builder.Default private final Integer skip = 0;
+    @Builder.Default private final String path = null;
     @Builder.Default private final String branch = null;
     @Builder.Default private final String oldTree = null;
     private final String newTree;
@@ -46,8 +47,16 @@ public class GitLogCommand implements GitCommand<List<GitCommit>> {
             }
         }
 
+        if (branch != null) {
+            command.add("--branches=" + branch);
+        }
+
         command.add("--pretty=format:{^^^^refs^^^^: { ^^^^commit^^^^: ^^^^%h^^^^, ^^^^tree^^^^: ^^^^%t^^^^ }, ^^^^abbreviatedTreeHash^^^^: , ^^^^author^^^^: {^^^^name^^^^: ^^^^%an^^^^, ^^^^email^^^^: ^^^^%ae^^^^, ^^^^date^^^^: %at}, ^^^^committer^^^^: {^^^^name^^^^: ^^^^%cn^^^^, ^^^^email^^^^: ^^^^%ce^^^^, ^^^^date^^^^: %ct}, ^^^^subject^^^^: ^^^^%s^^^^, ^^^^body^^^^: ^^^^%b^^^^},^&^&^&");
 
+        if (path != null) {
+            command.add("--");
+            command.add(path);
+        }
 
         try {
             ProcessBuilder builder = new ProcessBuilder(command);

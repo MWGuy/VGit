@@ -1,12 +1,13 @@
 package com.mwguy.vgit.controllers;
 
+import com.mwguy.vgit.configuration.GitConfiguration;
+import com.mwguy.vgit.dao.RepositoryDao;
+import com.mwguy.vgit.data.GitCommit;
+import com.mwguy.vgit.data.GitPackType;
+import com.mwguy.vgit.exceptions.GitException;
 import com.mwguy.vgit.service.GitService;
 import com.mwguy.vgit.service.HooksService;
-import com.mwguy.vgit.components.git.Git;
-import com.mwguy.vgit.components.git.GitLog;
-import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.service.RepositoriesService;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpEntity;
@@ -21,14 +22,12 @@ import java.util.Objects;
 @Slf4j
 @RestController
 public class GitController {
-    private final Git git;
     private final GitService gitService;
     private final RepositoriesService repositoriesService;
     private final HooksService hooksService;
     private final TaskExecutor taskExecutor;
 
-    public GitController(Git git, GitService gitService, RepositoriesService repositoriesService, HooksService hooksService, TaskExecutor taskExecutor) {
-        this.git = git;
+    public GitController(GitService gitService, RepositoriesService repositoriesService, HooksService hooksService, TaskExecutor taskExecutor) {
         this.gitService = gitService;
         this.repositoriesService = repositoriesService;
         this.hooksService = hooksService;
@@ -42,11 +41,11 @@ public class GitController {
             @PathVariable("path") String path,
             HttpServletResponse response
     ) throws IOException {
-        Git.GitPackType packType = Git.GitPackType.of(service);
+        GitPackType packType = GitPackType.of(service);
         RepositoryDao repositoryDao = repositoriesService
-                .findRepositoryAndCheckPermissions(namespace, path, packType.getPermissionType());
+                .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.getByPackType(packType));
 
-        response.setHeader("Content-Type", packType.getMediaType().toString());
+        response.setHeader("Content-Type", packType.getContentType());
         gitService.infoRefs(response.getOutputStream(), packType, repositoryDao.toRepositoryPath());
     }
 
@@ -60,7 +59,7 @@ public class GitController {
         RepositoryDao repositoryDao = repositoriesService
                 .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.GIT_PULL);
 
-        response.setHeader("Content-Type", Git.GitPackType.UPLOAD_PACK.getMediaType().toString());
+        response.setHeader("Content-Type", GitPackType.UPLOAD_PACK.getContentType());
         gitService.uploadPack(response.getOutputStream(), request.getInputStream(), repositoryDao.toRepositoryPath());
     }
 
@@ -74,7 +73,7 @@ public class GitController {
         RepositoryDao repositoryDao = repositoriesService
                 .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.GIT_PUSH);
 
-        response.setHeader("Content-Type", Git.GitPackType.RECEIVE_PACK.getMediaType().toString());
+        response.setHeader("Content-Type", GitPackType.RECEIVE_PACK.getContentType());
         gitService.receivePack(response.getOutputStream(), request.getInputStream(), repositoryDao.toRepositoryPath());
     }
 
@@ -99,14 +98,17 @@ public class GitController {
             String branch = input[2];
 
             try {
-                List<GitLog.GitCommit> commits = git
-                        .log(repositoryDao.toRepositoryPath())
+                List<GitCommit> commits = gitService.getGit()
+                        .log()
+                        .repository(GitConfiguration.resolveGitPath(repositoryDao.toRepositoryPath()))
+                        .branch(branch)
                         .oldTree(oldTree)
                         .newTree(newTree)
-                        .parse(0, 0);
+                        .build()
+                        .call();
 
                 hooksService.triggerHook(repositoryDao, RepositoryDao.RepositoryHookType.PUSH, commits);
-            } catch (IOException | InterruptedException e) {
+            } catch (GitException e) {
                 e.printStackTrace();
             }
         });

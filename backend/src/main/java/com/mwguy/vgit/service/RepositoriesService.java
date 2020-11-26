@@ -1,9 +1,11 @@
 package com.mwguy.vgit.service;
 
-import com.mwguy.vgit.components.git.Git;
-import com.mwguy.vgit.dao.UserDao;
-import com.mwguy.vgit.repositories.RepositoriesRepository;
+import com.mwguy.vgit.Git;
+import com.mwguy.vgit.configuration.GitConfiguration;
 import com.mwguy.vgit.dao.RepositoryDao;
+import com.mwguy.vgit.dao.UserDao;
+import com.mwguy.vgit.exceptions.GitException;
+import com.mwguy.vgit.repositories.RepositoriesRepository;
 import com.mwguy.vgit.utils.Authorization;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +15,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -42,7 +43,7 @@ public class RepositoriesService {
     }
 
     public RepositoryDao createNewRepository(CreateRepositoryInput input)
-            throws InterruptedException, IOException {
+            throws GitException {
         UserDao userDao = Authorization.getCurrentUser(false);
         assert userDao != null;
         if (!input.getPath().getNamespace().equals(userDao.getUsername())) {
@@ -56,7 +57,12 @@ public class RepositoriesService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, REPOSITORY_ALREADY_EXISTS);
         }
 
-        git.init(input.path.getNamespace() + "/" + input.getPath().getName());
+        git.init()
+                .repository(GitConfiguration.resolveGitPath(input.path.getNamespace() + "/" + input.getPath().getName()))
+                .bare(true)
+                .build()
+                .call();
+
         RepositoryDao repositoryDao = new RepositoryDao();
         repositoryDao.setPath(new RepositoryDao.RepositoryPath(
                 input.getPath().getName(),

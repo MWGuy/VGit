@@ -24,9 +24,13 @@ type GitUserInfo {
     date: Int!
 }
 
+type GitCommitRefs {
+    commit: String!
+    tree: String!
+}
+
 type GitCommit {
-    abbreviatedCommitHash: String!
-    abbreviatedTreeHash: String!
+    refs: GitCommitRefs!
     author: GitUserInfo!
     committer: GitUserInfo!
     subject: String!
