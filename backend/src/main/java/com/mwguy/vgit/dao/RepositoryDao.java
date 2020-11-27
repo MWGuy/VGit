@@ -5,11 +5,13 @@ import com.mwguy.vgit.VGitApplication;
 import com.mwguy.vgit.configuration.GitConfiguration;
 import com.mwguy.vgit.data.GitCommit;
 import com.mwguy.vgit.data.GitPackType;
+import com.mwguy.vgit.data.GitRepository;
 import com.mwguy.vgit.exceptions.GitException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
@@ -17,6 +19,7 @@ import org.springframework.lang.Nullable;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -129,6 +132,23 @@ public class RepositoryDao {
         return path.getNamespace() + "/" + path.getName();
     }
 
+    public GitRepository toGitRepository() {
+        return GitRepository.builder()
+                .path(GitConfiguration.resolveGitPath(toRepositoryPath()))
+                .environmentResolver(() -> new HashMap<>() {{
+                    {
+                        put("VGIT_REPOSITORY", toRepositoryPath());
+                        put("VGIT_SECRET", GitConfiguration.gitHookSecretKey);
+
+                        if (VGitApplication.context != null) {
+                            Environment springEnvironment = VGitApplication.context.getBean(Environment.class);
+                            put("VGIT_PORT", springEnvironment.getProperty("local.server.port"));
+                        }
+                    }
+                }})
+                .build();
+    }
+
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
@@ -140,7 +160,7 @@ public class RepositoryDao {
     public List<GitCommit> getCommits(PaginationInput pagination) throws GitException {
         Git git = VGitApplication.context.getBean(Git.class);
         return git.log()
-                .repository(GitConfiguration.resolveGitPath(this.toRepositoryPath()))
+                .repository(toGitRepository())
                 .skip(pagination.getSkip())
                 .maxCount(pagination.getLimit())
                 .build()

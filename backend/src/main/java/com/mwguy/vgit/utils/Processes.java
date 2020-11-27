@@ -4,7 +4,6 @@ import com.mwguy.vgit.VGitApplication;
 import com.mwguy.vgit.configuration.GitConfiguration;
 import com.mwguy.vgit.exceptions.GitException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.lang.Nullable;
 
@@ -23,7 +22,7 @@ public class Processes {
     public static Process startGitProcess(List<String> command, @Nullable File directory, @Nullable Map<String, String> env) throws GitException {
         log.debug(String.join(" ", command));
         ProcessBuilder processBuilder = new ProcessBuilder(command);
-        Map<String,String> environment = processBuilder.environment();
+        Map<String, String> environment = processBuilder.environment();
         environment.put("VGIT_SECRET", GitConfiguration.gitHookSecretKey);
 
         if (VGitApplication.context != null) {

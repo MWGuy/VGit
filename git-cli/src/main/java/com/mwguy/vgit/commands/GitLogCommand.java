@@ -2,6 +2,7 @@ package com.mwguy.vgit.commands;
 
 import com.google.gson.Gson;
 import com.mwguy.vgit.data.GitCommit;
+import com.mwguy.vgit.data.GitRepository;
 import com.mwguy.vgit.exceptions.GitException;
 import lombok.Builder;
 
@@ -21,7 +22,7 @@ public class GitLogCommand implements GitCommand<List<GitCommit>> {
     @Builder.Default private final String branch = null;
     @Builder.Default private final String oldTree = null;
     private final String newTree;
-    private final Path repository;
+    private final GitRepository repository;
 
     @Override
     public List<GitCommit> call() throws GitException {
@@ -60,7 +61,8 @@ public class GitLogCommand implements GitCommand<List<GitCommit>> {
 
         try {
             ProcessBuilder builder = new ProcessBuilder(command);
-            builder.directory(repository.toAbsolutePath().toFile());
+            builder.directory(repository.getPath().toAbsolutePath().toFile());
+            repository.getEnvironmentResolver().resolve().forEach(builder.environment()::put);
             Process process = builder.start();
 
             process.waitFor();

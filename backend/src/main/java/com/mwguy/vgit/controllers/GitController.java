@@ -1,6 +1,5 @@
 package com.mwguy.vgit.controllers;
 
-import com.mwguy.vgit.configuration.GitConfiguration;
 import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.data.GitCommit;
 import com.mwguy.vgit.data.GitPackType;
@@ -46,7 +45,7 @@ public class GitController {
                 .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.getByPackType(packType));
 
         response.setHeader("Content-Type", packType.getContentType());
-        gitService.infoRefs(response.getOutputStream(), packType, repositoryDao.toRepositoryPath());
+        gitService.infoRefs(response.getOutputStream(), packType, repositoryDao);
     }
 
     @PostMapping("/{namespace}/{path}.git/git-upload-pack")
@@ -60,7 +59,7 @@ public class GitController {
                 .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.GIT_PULL);
 
         response.setHeader("Content-Type", GitPackType.UPLOAD_PACK.getContentType());
-        gitService.uploadPack(response.getOutputStream(), request.getInputStream(), repositoryDao.toRepositoryPath());
+        gitService.uploadPack(response.getOutputStream(), request.getInputStream(), repositoryDao);
     }
 
     @PostMapping("/{namespace}/{path}.git/git-receive-pack")
@@ -74,7 +73,7 @@ public class GitController {
                 .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.GIT_PUSH);
 
         response.setHeader("Content-Type", GitPackType.RECEIVE_PACK.getContentType());
-        gitService.receivePack(response.getOutputStream(), request.getInputStream(), repositoryDao.toRepositoryPath());
+        gitService.receivePack(response.getOutputStream(), request.getInputStream(), repositoryDao);
     }
 
     @PostMapping("/{namespace}/{path}.git/hook/{type}")
@@ -100,7 +99,7 @@ public class GitController {
             try {
                 List<GitCommit> commits = gitService.getGit()
                         .log()
-                        .repository(GitConfiguration.resolveGitPath(repositoryDao.toRepositoryPath()))
+                        .repository(repositoryDao.toGitRepository())
                         .branch(branch)
                         .oldTree(oldTree)
                         .newTree(newTree)

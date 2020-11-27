@@ -1,6 +1,7 @@
 package com.mwguy.vgit.commands;
 
 import com.mwguy.vgit.data.GitPackType;
+import com.mwguy.vgit.data.GitRepository;
 import com.mwguy.vgit.exceptions.GitException;
 import lombok.Builder;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Builder
 public class GitStatelessRpcCommand implements GitCommand<InputStream> {
-    private final Path repository;
+    private final GitRepository repository;
     private final GitPackType packType;
     @Builder.Default private final Boolean advertiseRefs = false;
     @Builder.Default private final InputStream inputStream = null;
@@ -27,9 +28,10 @@ public class GitStatelessRpcCommand implements GitCommand<InputStream> {
             command.add("--advertise-refs");
         }
 
-        command.add(repository.toAbsolutePath().toString());
-
+        command.add(repository.getPath().toAbsolutePath().toString());
         ProcessBuilder processBuilder = new ProcessBuilder(command);
+        repository.getEnvironmentResolver().resolve().forEach(processBuilder.environment()::put);
+
         try {
             Process process = processBuilder.start();
             if (this.inputStream != null) {

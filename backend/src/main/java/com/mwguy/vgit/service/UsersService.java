@@ -1,9 +1,9 @@
 package com.mwguy.vgit.service;
 
+import com.mwguy.vgit.VGitRegex;
 import com.mwguy.vgit.dao.UserDao;
 import com.mwguy.vgit.exceptions.UsersException;
 import com.mwguy.vgit.repositories.UsersRepository;
-import com.mwguy.vgit.VGitRegex;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -106,17 +106,17 @@ public class UsersService {
         return new AuthorizationResponse(usersRepository.save(userDao), token);
     }
 
-    public UserDao deleteToken(UserDao userDao, String token) {
+    public void deleteToken(UserDao userDao, String token) {
         if (!userDao.getTokens().contains(token)) {
             throw new UsersException(PROVIDED_INVALID_TOKEN);
         }
 
         userDao.getTokens().remove(token);
-        return usersRepository.save(userDao);
+        usersRepository.save(userDao);
     }
 
-    public UserDao deleteAllTokens(UserDao userDao) {
+    public void deleteAllTokens(UserDao userDao) {
         userDao.setTokens(new HashSet<>());
-        return usersRepository.save(userDao);
+        usersRepository.save(userDao);
     }
 }

@@ -6,8 +6,6 @@ import com.mwguy.vgit.service.RepositoriesService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 @Component
 public class RepositoriesMutationResolver implements GraphQLMutationResolver {
     private final RepositoriesService repositoriesService;
