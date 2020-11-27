@@ -7,7 +7,6 @@ import lombok.Builder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +14,10 @@ import java.util.List;
 public class GitStatelessRpcCommand implements GitCommand<InputStream> {
     private final GitRepository repository;
     private final GitPackType packType;
-    @Builder.Default private final Boolean advertiseRefs = false;
-    @Builder.Default private final InputStream inputStream = null;
+    @Builder.Default
+    private final Boolean advertiseRefs = false;
+    @Builder.Default
+    private final InputStream inputStream = null;
 
     @Override
     public InputStream call() throws GitException {

@@ -7,7 +7,6 @@ import com.mwguy.vgit.exceptions.GitException;
 import lombok.Builder;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,11 +15,16 @@ import java.util.List;
 public class GitLogCommand implements GitCommand<List<GitCommit>> {
     private static final Gson gson = new Gson();
 
-    @Builder.Default private final Integer maxCount = 0;
-    @Builder.Default private final Integer skip = 0;
-    @Builder.Default private final String path = null;
-    @Builder.Default private final String branch = null;
-    @Builder.Default private final String oldTree = null;
+    @Builder.Default
+    private final Integer maxCount = 0;
+    @Builder.Default
+    private final Integer skip = 0;
+    @Builder.Default
+    private final String path = null;
+    @Builder.Default
+    private final String branch = null;
+    @Builder.Default
+    private final String oldTree = null;
     private final String newTree;
     private final GitRepository repository;
 

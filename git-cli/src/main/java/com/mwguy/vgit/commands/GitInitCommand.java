@@ -5,12 +5,12 @@ import com.mwguy.vgit.exceptions.GitException;
 import lombok.Builder;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 @Builder
 public class GitInitCommand implements GitCommand<Void> {
-    @Builder.Default private final Boolean bare = true;
+    @Builder.Default
+    private final Boolean bare = true;
     private final GitRepository repository;
 
     @Override

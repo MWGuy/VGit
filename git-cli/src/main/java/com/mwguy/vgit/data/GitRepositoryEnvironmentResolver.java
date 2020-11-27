@@ -5,5 +5,6 @@ import java.util.Map;
 
 public interface GitRepositoryEnvironmentResolver {
     GitRepositoryEnvironmentResolver EMPTY = Collections::emptyMap;
+
     Map<String, String> resolve();
 }

@@ -2,8 +2,6 @@ package com.mwguy.vgit.data;
 
 import lombok.*;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @NoArgsConstructor
