@@ -41,10 +41,12 @@ public class RepositoryDao {
         HOOK_TRIGGER;
 
         public static PermissionType getByPackType(GitPackType type) {
-            return switch (type) {
-                case RECEIVE_PACK -> GIT_PUSH;
-                case UPLOAD_PACK -> GIT_PULL;
-            };
+            switch (type) {
+                case UPLOAD_PACK: return GIT_PULL;
+                case RECEIVE_PACK: return GIT_PUSH;
+            }
+
+            return null;
         }
     }
 
