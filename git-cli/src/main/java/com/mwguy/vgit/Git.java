@@ -1,9 +1,6 @@
 package com.mwguy.vgit;
 
-import com.mwguy.vgit.commands.GitInitCommand;
-import com.mwguy.vgit.commands.GitLogCommand;
-import com.mwguy.vgit.commands.GitStatelessRpcCommand;
-import com.mwguy.vgit.commands.GitVersionCommand;
+import com.mwguy.vgit.commands.*;
 
 public class Git {
     public GitVersionCommand version() {
@@ -20,5 +17,9 @@ public class Git {
 
     public GitLogCommand.GitLogCommandBuilder log() {
         return GitLogCommand.builder();
+    }
+
+    public GitLsTreeCommand.GitLsTreeCommandBuilder lsTree() {
+        return GitLsTreeCommand.builder();
     }
 }

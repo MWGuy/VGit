@@ -6,6 +6,7 @@ import com.mwguy.vgit.configuration.GitConfiguration;
 import com.mwguy.vgit.data.GitCommit;
 import com.mwguy.vgit.data.GitPackType;
 import com.mwguy.vgit.data.GitRepository;
+import com.mwguy.vgit.data.GitTreeEntry;
 import com.mwguy.vgit.exceptions.GitException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -159,12 +160,30 @@ public class RepositoryDao {
         private Integer limit;
     }
 
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GitTreeInput {
+        private String path;
+        private String object;
+    }
+
     public List<GitCommit> getCommits(PaginationInput pagination) throws GitException {
         Git git = VGitApplication.context.getBean(Git.class);
         return git.log()
                 .repository(toGitRepository())
                 .skip(pagination.getSkip())
                 .maxCount(pagination.getLimit())
+                .build()
+                .call();
+    }
+
+    public List<GitTreeEntry> getTree(GitTreeInput input) throws GitException {
+        Git git = VGitApplication.context.getBean(Git.class);
+        return git.lsTree()
+                .repository(toGitRepository())
+                .object(input.getObject())
+                .path(input.getPath())
                 .build()
                 .call();
     }

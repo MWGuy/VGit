@@ -9,6 +9,11 @@ enum RepositoryPathType {
     GROUP
 }
 
+enum GitObjectType {
+    TREE
+    BLOB
+}
+
 type User {
     id: ID!
     email: String!
@@ -38,6 +43,14 @@ type GitCommit {
     body: String!
 }
 
+type GitTreeEntry {
+    mode: Int!
+    size: Int!
+    type: GitObjectType!
+    name: String!
+    object: String!
+}
+
 type RepositoryPath {
     name: String!
     namespace: String!
@@ -50,6 +63,7 @@ type Repository {
     accessPermission: AccessPermission!
     description: String
     commits(pagination: PaginationInput!): [GitCommit]!
+    tree(input: GitTreeInput!): [GitTreeEntry]!
 }
 
 type AuthorizationResponse {
@@ -82,6 +96,11 @@ input CreateRepositoryInput {
 input PaginationInput {
     skip: Int!
     limit: Int!
+}
+
+input GitTreeInput {
+    path: String
+    object: String
 }
 
 type Query {

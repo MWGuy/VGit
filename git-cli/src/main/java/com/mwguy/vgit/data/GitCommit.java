@@ -3,12 +3,10 @@ package com.mwguy.vgit.data;
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class GitCommit {
     @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Refs {
@@ -17,7 +15,6 @@ public class GitCommit {
     }
 
     @Getter
-    @Setter
     @ToString
     @AllArgsConstructor
     @NoArgsConstructor
