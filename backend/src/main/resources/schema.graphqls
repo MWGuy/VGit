@@ -16,6 +16,7 @@ type User {
     realName: String!
     banned: Boolean!
     description: String
+    repositories: [Repository]
 }
 
 type GitUserInfo {

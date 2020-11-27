@@ -1,5 +1,7 @@
 package com.mwguy.vgit.dao;
 
+import com.mwguy.vgit.VGitApplication;
+import com.mwguy.vgit.repositories.RepositoriesRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -74,5 +76,10 @@ public class UserDao implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Set<RepositoryDao> getRepositories() {
+        RepositoriesRepository repositoriesRepository = VGitApplication.context.getBean(RepositoriesRepository.class);
+        return repositoriesRepository.findByPath_Namespace(getUsername());
     }
 }
