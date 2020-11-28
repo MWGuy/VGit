@@ -1,9 +1,9 @@
 import React, {useState} from "react";
 import CredentialsInputPage from "./CredentialsInputPage";
 import {Button, ButtonGroup, Callout, FormGroup, InputGroup, Intent} from "@blueprintjs/core";
-import {apolloClient} from "../App";
+import {apolloClient} from "../../App";
 import {gql} from "@apollo/client";
-import {useHistory} from "react-router-dom";
+import {Redirect, useHistory} from "react-router-dom";
 
 const SIGN_IN_USER = gql`
     mutation ($username: String!, $password: String!) {
@@ -48,6 +48,10 @@ export default () => {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
+
+    if (localStorage.getItem("token")) {
+        return <Redirect to="/"/>
+    }
 
     return <CredentialsInputPage
         description="Sign In to account"

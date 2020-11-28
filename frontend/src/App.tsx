@@ -6,9 +6,11 @@ import {
     BrowserRouter
 } from "react-router-dom";
 
-import SignInPage from "./components/SignInPage";
-import SignUpPage from "./components/SignUpPage";
-import NotFoundPage from "./components/NotFoundPage";
+import SignInPage from "./components/pages/SignInPage";
+import SignUpPage from "./components/pages/SignUpPage";
+import NotFoundPage from "./components/pages/NotFoundPage";
+import WelcomePage from "./components/pages/WelcomePage";
+
 import {
     ApolloClient,
     ApolloLink,
@@ -39,9 +41,7 @@ export default () => {
     return <ApolloProvider client={apolloClient}>
         <BrowserRouter>
             <Switch>
-                <Route exact path="/">
-                    <h1>Hello World!</h1>
-                </Route>
+                <Route exact path="/" component={WelcomePage}/>
                 <Route exact path="/sign/in" component={SignInPage}/>
                 <Route exact path="/sign/up" component={SignUpPage}/>
                 <Route exact component={NotFoundPage}/>

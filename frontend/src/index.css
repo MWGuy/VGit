@@ -21,3 +21,7 @@ body, html {
     padding-top: 24px;
     width: var(--credentials-input-page-content-width);
 }
+
+.basic-page-content {
+    padding: 24px;
+}
