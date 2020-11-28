@@ -1,0 +1,23 @@
+body, html {
+    padding: 0;
+    margin: 0;
+    background: #fbfbfb;
+
+    --credentials-input-page-content-width: 300px;
+}
+
+.credentials-input-page-container {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.credentials-input-page-card {
+    width: var(--credentials-input-page-content-width);
+}
+
+.credentials-input-page-callout {
+    padding-top: 24px;
+    width: var(--credentials-input-page-content-width);
+}
