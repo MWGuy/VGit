@@ -7,6 +7,7 @@ import lombok.Builder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -58,6 +59,7 @@ public class GitLsTreeCommand implements GitCommand<List<GitTreeEntry>> {
                 trees.add(tree);
             }
 
+            trees.sort(Comparator.comparingInt(entry -> entry.getType().ordinal()));
             return trees;
         } catch (InterruptedException | IOException e) {
             throw new GitException(e.getMessage(), e);
