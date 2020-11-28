@@ -35,7 +35,9 @@ const USER_SIGN_OUT = gql`
 
 function NavigationBarProfileIndicator() {
     const history = useHistory();
-    const { data, error, loading } = useQuery(GET_CURRENT_USER);
+    const { data, error, loading } = useQuery(GET_CURRENT_USER, {
+        fetchPolicy: "no-cache"
+    });
     const [loadingLogout, setLoadingLogout] = useState<boolean>(false);
 
     if (loading || loadingLogout) {

@@ -12,10 +12,6 @@ const SIGN_IN_USER = gql`
             password: $password
         }) {
             token
-            user {
-                email
-                userName
-            }
         }
     }
 `

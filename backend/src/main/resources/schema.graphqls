@@ -78,7 +78,7 @@ input UserInfoInput {
     description: String
 }
 
-input AuthorizationCredentials {
+input AuthorizationCredentialsInput {
     userName: String!
     password: String!
 }
@@ -113,8 +113,8 @@ type Query {
 }
 
 type Mutation {
-    registerUser(info: UserInfoInput!, credentials: AuthorizationCredentials!): AuthorizationResponse!
-    authenticateUser(credentials: AuthorizationCredentials!): AuthorizationResponse!
+    registerUser(info: UserInfoInput!, credentials: AuthorizationCredentialsInput!): AuthorizationResponse!
+    authenticateUser(credentials: AuthorizationCredentialsInput!): AuthorizationResponse!
 
     deleteToken: Boolean!
     deleteAllTokens: Boolean!
