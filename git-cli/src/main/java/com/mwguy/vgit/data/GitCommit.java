@@ -2,22 +2,15 @@ package com.mwguy.vgit.data;
 
 import lombok.*;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class GitCommit {
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Data
     public static class Refs {
         private String commit;
         private String tree;
     }
 
-    @Getter
-    @ToString
-    @AllArgsConstructor
-    @NoArgsConstructor
+    @Data
     public static class GitUserInfo {
         private String name;
         private String email;

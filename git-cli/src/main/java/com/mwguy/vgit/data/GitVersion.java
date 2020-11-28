@@ -1,14 +1,9 @@
 package com.mwguy.vgit.data;
 
 import com.mwguy.vgit.exceptions.GitException;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Setter
-@Getter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
 public class GitVersion {
     private Integer major;

@@ -2,10 +2,7 @@ package com.mwguy.vgit.dao;
 
 import com.mwguy.vgit.VGitApplication;
 import com.mwguy.vgit.repositories.RepositoriesRepository;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.lang.NonNull;
@@ -17,10 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @Document("users")
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserDao implements UserDetails {
     @Id

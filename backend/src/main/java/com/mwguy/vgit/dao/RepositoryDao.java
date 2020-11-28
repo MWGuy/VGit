@@ -23,10 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Document("repositories")
 public class RepositoryDao {
     public enum AccessPermission {

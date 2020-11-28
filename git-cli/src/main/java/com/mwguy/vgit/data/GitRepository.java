@@ -5,8 +5,8 @@ import lombok.Getter;
 
 import java.nio.file.Path;
 
-@Builder
 @Getter
+@Builder
 public class GitRepository {
     @Builder.Default
     private final GitRepositoryEnvironmentResolver environmentResolver = GitRepositoryEnvironmentResolver.EMPTY;
