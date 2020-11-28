@@ -22,4 +22,8 @@ public class Git {
     public GitLsTreeCommand.GitLsTreeCommandBuilder lsTree() {
         return GitLsTreeCommand.builder();
     }
+
+    public GitCatFileCommand.GitCatFileCommandBuilder catFile() {
+        return GitCatFileCommand.builder();
+    }
 }

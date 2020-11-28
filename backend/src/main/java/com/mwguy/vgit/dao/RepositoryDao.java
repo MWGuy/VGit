@@ -8,16 +8,15 @@ import com.mwguy.vgit.data.GitPackType;
 import com.mwguy.vgit.data.GitRepository;
 import com.mwguy.vgit.data.GitTreeEntry;
 import com.mwguy.vgit.exceptions.GitException;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
@@ -152,17 +151,13 @@ public class RepositoryDao {
                 .build();
     }
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Data
     public static class PaginationInput {
         private Integer skip;
         private Integer limit;
     }
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Data
     public static class GitTreeInput {
         private String path;
         private String object;
@@ -186,5 +181,17 @@ public class RepositoryDao {
                 .path(input.getPath())
                 .build()
                 .call();
+    }
+
+    public String getBlob(String object) throws GitException, IOException {
+        Git git = VGitApplication.context.getBean(Git.class);
+        return Base64.encodeBase64String(git.catFile()
+                .repository(toGitRepository())
+                .type(GitTreeEntry.GitObjectType.BLOB)
+                .object(object)
+                .build()
+                .call()
+                .readAllBytes()
+        );
     }
 }

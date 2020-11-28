@@ -64,6 +64,7 @@ type Repository {
     description: String
     commits(pagination: PaginationInput!): [GitCommit]!
     tree(input: GitTreeInput!): [GitTreeEntry]!
+    blob(object: String!): String!
 }
 
 type AuthorizationResponse {
