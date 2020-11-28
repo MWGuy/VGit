@@ -7,3 +7,10 @@ allprojects {
     version = '0.0.1-SNAPSHOT'
     sourceCompatibility = '11'
 }
+
+task fullBuild {
+    dependsOn 'backend:bootJar'
+    dependsOn 'frontend:npmBuild'
+
+    tasks.findByPath(":backend:bootJar").mustRunAfter ':frontend:npmBuild'
+}

@@ -1,4 +1,5 @@
 rootProject.name = 'vgit'
 
+include 'frontend'
 include 'backend'
 include 'git-cli'

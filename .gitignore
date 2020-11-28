@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# fullBuild
+/backend/src/main/resources/static/
