@@ -8,7 +8,7 @@ import {
 
 import SignInPage from "./components/pages/SignInPage";
 import SignUpPage from "./components/pages/SignUpPage";
-import NotFoundPage from "./components/pages/NotFoundPage";
+import NotFoundPage from "./components/pages/nonIdealStates/NotFoundPage";
 import WelcomePage from "./components/pages/WelcomePage";
 
 import {

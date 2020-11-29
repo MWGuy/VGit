@@ -17,6 +17,7 @@ import EmailAvatar from "./EmailAvatar";
 
 import logo from "../images/logoNoText.svg"
 import {apolloClient} from "../App";
+import AuthorizeOptions from "./AuthorizeOptions";
 
 const GET_CURRENT_USER = gql`
     query {
@@ -45,20 +46,7 @@ function NavigationBarProfileIndicator() {
     }
 
     if (error) {
-        return <ButtonGroup>
-            <Button
-                className={Classes.MINIMAL}
-                icon="home"
-                text="Sign In"
-                onClick={() => history.push("/sign/in")}
-            />
-            <Button
-                className={Classes.OUTLINED}
-                icon="document"
-                text="Sign Up"
-                onClick={() => history.push("/sign/up")}
-            />
-        </ButtonGroup>
+        return <AuthorizeOptions/>
     }
 
     if (data) {

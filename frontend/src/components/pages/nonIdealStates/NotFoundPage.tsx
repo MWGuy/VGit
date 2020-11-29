@@ -1,6 +1,6 @@
 import React from "react";
 import {NonIdealState} from "@blueprintjs/core";
-import BasicPage from "./BasicPage";
+import BasicPage from "../BasicPage";
 
 export default () => {
     return <BasicPage>

@@ -25,3 +25,13 @@ body, html {
 .basic-page-content {
     padding: 24px;
 }
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}

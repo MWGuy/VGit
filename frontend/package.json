@@ -11,7 +11,8 @@
     "@blueprintjs/core": "^3.36.0",
     "@apollo/client": "^3.2.9",
     "graphql": "^15.4.0",
-    "crypto-js": "^4.0.0"
+    "crypto-js": "^4.0.0",
+    "moment": "^2.29.1"
   },
   "devDependencies": {
     "@types/react": "^16.9.53",
