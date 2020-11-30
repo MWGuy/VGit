@@ -3,7 +3,8 @@ import React from 'react';
 import {
     Switch,
     Route,
-    BrowserRouter
+    BrowserRouter,
+    Redirect
 } from "react-router-dom";
 
 import SignInPage from "./components/pages/SignInPage";
@@ -19,6 +20,7 @@ import {
     HttpLink,
     InMemoryCache
 } from "@apollo/client";
+import RepositoryPage from "./components/pages/repository/RepositoryPage";
 
 const httpLink = new HttpLink({ uri: process.env.NODE_ENV === 'production' ? '/graphql' : 'http://localhost:8080/graphql', useGETForQueries: false });
 const authMiddleware = new ApolloLink((operation, forward) => {
@@ -44,6 +46,11 @@ export default () => {
                 <Route exact path="/" component={WelcomePage}/>
                 <Route exact path="/sign/in" component={SignInPage}/>
                 <Route exact path="/sign/up" component={SignUpPage}/>
+                <Route exact path="/:namespace/:name" component={(props: any) => {
+                    return <Redirect to={`/${props.match.params.namespace}/${props.match.params.name}/commit`}/>;
+                }}/>
+                <Route exact path="/:namespace/:name/:page" component={RepositoryPage}/>
+                <Route exact path="/:namespace/:name/:page/:info" component={RepositoryPage}/>
                 <Route exact component={NotFoundPage}/>
             </Switch>
         </BrowserRouter>

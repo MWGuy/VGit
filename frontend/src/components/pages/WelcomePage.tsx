@@ -1,21 +1,11 @@
 import React from "react";
 import BasicPage from "./BasicPage";
-import EmailAvatar from "../EmailAvatar";
 import UnauthorizedPage from "./nonIdealStates/UnauthorizedPage";
-import {
-    Alignment,
-    Button,
-    Card,
-    Icon,
-    Intent, NavbarDivider,
-    NavbarGroup,
-    NonIdealState,
-    Spinner,
-    Tag
-} from "@blueprintjs/core";
+import {Alignment, Button, Card, Icon, Intent, NavbarGroup, NonIdealState, Spinner, Tag} from "@blueprintjs/core";
 
 import {gql, useQuery} from "@apollo/client";
-import moment from "moment";
+import CommitInfo, {CommitInfoType} from "../CommitInfo";
+import {Link} from "react-router-dom";
 
 const GET_USER_REPOSITORIES = gql`
     query {
@@ -59,27 +49,6 @@ export default () => {
         >New repository</Button>
     }
 
-    const CommitInfo = (props: any) => {
-        if (!props.commit) {
-            return <div>Repository is empty</div>
-        }
-
-        return <div style={{
-            display: "flex",
-            alignItems: "center"
-        }}>
-            <EmailAvatar size={24} email={props.commit.author.email}/>
-            <div style={{ padding: 4 }}/>
-            <b>{props.commit.author.name}</b>
-            <div style={{ padding: 4 }}/>
-            {props.commit.subject}
-            <div style={{ padding: 4 }}/>
-            <Tag>{props.commit.refs.commit.substr(0, 7)}</Tag>
-            <NavbarDivider/>
-            <div>{moment(props.commit.author.date * 1000).fromNow()}</div>
-        </div>
-    }
-
     return <BasicPage>
         {!data ? <Spinner/> : <div className="flex-column">
             <div>
@@ -109,11 +78,11 @@ export default () => {
                             }}>
                                 <Icon icon="git-repo"/>
                                 <div style={{ padding: 4 }}/>
-                                <div>{`${value.path.namespace} / ${value.path.name}`}</div>
+                                <Link to={`/${value.path.namespace}/${value.path.name}`}>{`${value.path.namespace} / ${value.path.name}`}</Link>
                                 <div style={{ padding: 4 }}/>
                                 <div><Tag>{value.accessPermission.toLowerCase()}</Tag></div>
                             </div>
-                            <CommitInfo commit={value.commits[0]}/>
+                            {value.commits[0] ? <CommitInfo type={CommitInfoType.SHORT} commit={value.commits[0]}/> : <div>Repository is empty</div>}
                         </Card>
                     })}
                 </div>}
