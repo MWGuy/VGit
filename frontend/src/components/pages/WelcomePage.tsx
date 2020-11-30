@@ -40,7 +40,7 @@ export default () => {
         return <UnauthorizedPage/>
     }
 
-    const {data, loading, error} = useQuery(GET_USER_REPOSITORIES);
+    const {data} = useQuery(GET_USER_REPOSITORIES);
 
     const NewRepositoryButton = () => {
         return <Button

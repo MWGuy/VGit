@@ -3,11 +3,8 @@ import BasicPage from "../BasicPage";
 import {gql, useQuery} from "@apollo/client";
 import {Breadcrumbs, Card, Menu, MenuItem, NonIdealState, Spinner} from "@blueprintjs/core";
 import NotFoundPage from "../nonIdealStates/NotFoundPage";
-import {IconName} from "@blueprintjs/icons";
-import {MaybeElement} from "@blueprintjs/core/src/common/props";
 import RepositoryCommitsPage from "./RepositoryCommitsPage";
 import { useHistory } from "react-router-dom";
-import {IBreadcrumbProps} from "@blueprintjs/core/src/components/breadcrumbs/breadcrumb";
 
 export interface RepositoryPath {
     namespace: string;
@@ -22,7 +19,7 @@ export interface RepositorySubpageProps {
 export interface RepositorySubpageItem {
     path: string;
     name: string;
-    icon: IconName | MaybeElement;
+    icon: string;
     component: (props: RepositorySubpageProps) => React.ReactNode;
 }
 
@@ -91,7 +88,7 @@ export default (props: any) => {
     }
 
     const item = getCurrentRepositorySubpageItem(props.match.params.page);
-    const items: IBreadcrumbProps[] = [
+    const items: any[] = [
         {
             href: "/" + data.repositoryByPath.path.namespace,
             text: data.repositoryByPath.path.namespace,
@@ -126,9 +123,9 @@ export default (props: any) => {
             }}>
                 <Menu>
                     {repositorySubpages.map(value => {
-                        return <MenuItem
+                        // @ts-ignore
+                        return <MenuItem icon={value.icon}
                             text={value.name}
-                            icon={value.icon}
                             active={props.match.params.page === value.path}
                             onClick={() => {
                                 history.push("/" + props.match.params.namespace + "/" + props.match.params.name + "/" + value.path)

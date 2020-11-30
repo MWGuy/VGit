@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {RepositorySubpageProps} from "./RepositoryPage";
 import {gql} from "@apollo/client";
 import {Button, Intent, NonIdealState, Spinner, Tag} from "@blueprintjs/core";
@@ -32,7 +32,7 @@ export default (props: RepositorySubpageProps) => {
         return <NonIdealState icon="git-commit" title="Not found" description={<div>Can`t find commit <Tag>{props.info.substr(0, 7)}</Tag></div>}/>
     }
 
-    const next = () => {
+    const next = useCallback(() => {
         setLoading(true);
         apolloClient.query({
             query: GET_COMMITS,
@@ -52,13 +52,13 @@ export default (props: RepositorySubpageProps) => {
             setItems(items.concat(response));
             setLoading(false);
         });
-    }
+    }, [setLoading, items, setHasMore, setItems, props]);
 
     useEffect(() => {
         if (items.length === 0 && hasMore) {
             next();
         }
-    }, [items]);
+    }, [items, hasMore, next]);
 
     return <div>
         {items.length === 0 && !hasMore && <NonIdealState icon="git-repo" title="Nothing here..." description="This repository is empty"/>}
