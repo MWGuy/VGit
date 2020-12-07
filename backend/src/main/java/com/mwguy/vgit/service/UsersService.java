@@ -1,6 +1,6 @@
 package com.mwguy.vgit.service;
 
-import com.mwguy.vgit.VGitRegex;
+import com.mwguy.vgit.VGitConstants;
 import com.mwguy.vgit.dao.UserDao;
 import com.mwguy.vgit.exceptions.UsersException;
 import com.mwguy.vgit.repositories.UsersRepository;
@@ -16,13 +16,10 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.UUID;
 
+import static com.mwguy.vgit.VGitConstants.*;
+
 @Service
 public class UsersService {
-    public static final String USER_ALREADY_EXISTS = "User already exists";
-    public static final String USER_NOT_FOUND = "User not found";
-    public static final String PROVIDED_INVALID_EMAIL = "Provided invalid email";
-    public static final String PROVIDED_INVALID_PASSWORD = "Provided invalid password";
-    public static final String PROVIDED_INVALID_TOKEN = "Provided invalid token";
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
@@ -72,7 +69,7 @@ public class UsersService {
             throw new UsersException(USER_ALREADY_EXISTS);
         }
 
-        if (!VGitRegex.EMAIL_PATTERN.matcher(info.getEmail()).matches()) {
+        if (!VGitConstants.EMAIL_PATTERN.matcher(info.getEmail()).matches()) {
             throw new UsersException(PROVIDED_INVALID_EMAIL);
         }
 

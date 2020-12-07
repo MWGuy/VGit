@@ -7,9 +7,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import static com.mwguy.vgit.VGitConstants.*;
+
 public class Authorization {
-    public static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
-    public static final String GIT_HOOK_TRIGGER = "git-hook-trigger";
 
     public static UserDao getCurrentUser(boolean allowAnonymousUser) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

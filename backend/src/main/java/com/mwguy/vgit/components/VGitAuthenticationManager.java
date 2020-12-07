@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.BearerTokenAuthenticationToken;
 
+import static com.mwguy.vgit.VGitConstants.*;
+
 @Slf4j
 public class VGitAuthenticationManager implements AuthenticationManager {
     private final PasswordEncoder passwordEncoder;
@@ -46,14 +48,14 @@ public class VGitAuthenticationManager implements AuthenticationManager {
         }
 
         if (!userDao.isAccountNonLocked()) {
-            throw new LockedException("Account banned");
+            throw new LockedException(ACCOUNT_BANNED);
         }
 
         if (passwordEncoder.matches(password, userDao.getPassword())) {
             return Authorization.createAuthenticationToken(userDao, authentication.getCredentials());
         }
 
-        throw new BadCredentialsException("Invalid username or password");
+        throw new BadCredentialsException(PROVIDED_INVALID_CREDENTIALS);
     }
 
     public Authentication authenticateBearerBasic(BearerTokenAuthenticationToken authentication)

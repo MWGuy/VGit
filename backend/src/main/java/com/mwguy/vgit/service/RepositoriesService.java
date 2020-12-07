@@ -23,12 +23,10 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashSet;
 
+import static com.mwguy.vgit.VGitConstants.*;
+
 @Service
 public class RepositoriesService {
-    public static final String NAMESPACE_PERMISSION_DENIED = "Permission denied for this namespace";
-    public static final String PERMISSION_DENIED = "Permission denied";
-    public static final String REPOSITORY_ALREADY_EXISTS = "Repository already exists";
-    public static final String REPOSITORY_NOT_FOUND = "Repository not found";
 
     private final RepositoriesRepository repositoriesRepository;
     private final Git git;
@@ -104,7 +102,7 @@ public class RepositoriesService {
         }
 
         if (!repositoryDao.checkPermission(type, Authorization.getCurrentUser(true))) {
-            throw new BadCredentialsException(Authorization.UNAUTHORIZED_MESSAGE);
+            throw new BadCredentialsException(UNAUTHORIZED_MESSAGE);
         }
 
         return repositoryDao;
