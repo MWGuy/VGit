@@ -4,6 +4,7 @@ import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.data.GitCommit;
 import com.mwguy.vgit.data.GitPackType;
 import com.mwguy.vgit.exceptions.GitException;
+import com.mwguy.vgit.service.CIService;
 import com.mwguy.vgit.service.GitService;
 import com.mwguy.vgit.service.HooksService;
 import com.mwguy.vgit.service.RepositoriesService;
@@ -15,18 +16,22 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @RestController
 public class GitController {
+    private final CIService ciService;
     private final GitService gitService;
     private final RepositoriesService repositoriesService;
     private final HooksService hooksService;
     private final TaskExecutor taskExecutor;
 
-    public GitController(GitService gitService, RepositoriesService repositoriesService, HooksService hooksService, TaskExecutor taskExecutor) {
+    public GitController(CIService ciService, GitService gitService, RepositoriesService repositoriesService, HooksService hooksService, TaskExecutor taskExecutor) {
+        this.ciService = ciService;
         this.gitService = gitService;
         this.repositoriesService = repositoriesService;
         this.hooksService = hooksService;
@@ -82,11 +87,11 @@ public class GitController {
             @PathVariable("path") String path,
             @PathVariable("type") String type,
             HttpEntity<String> httpEntity
-    ) throws IOException, InterruptedException {
+    ) {
         RepositoryDao repositoryDao = repositoriesService
                 .findRepositoryAndCheckPermissions(namespace, path, RepositoryDao.PermissionType.HOOK_TRIGGER);
 
-        if (!hooksService.hasHooks(repositoryDao, RepositoryDao.RepositoryHookType.PUSH)) {
+        if (!"POST_RECEIVE".equals(type)) {
             return;
         }
 
@@ -96,18 +101,32 @@ public class GitController {
             String newTree = input[1];
             String branch = input[2];
 
-            try {
-                List<GitCommit> commits = gitService.getGit()
-                        .log()
-                        .repository(repositoryDao.toGitRepository())
-                        .branch(branch)
-                        .oldTree(oldTree)
-                        .newTree(newTree)
-                        .build()
-                        .call();
+            if (hooksService.hasHooks(repositoryDao, RepositoryDao.RepositoryHookType.GIT_PUSH)) {
+                try {
+                    List<GitCommit> commits = gitService.getGit()
+                            .log()
+                            .repository(repositoryDao.toGitRepository())
+                            .branch(branch)
+                            .oldTree(oldTree)
+                            .newTree(newTree)
+                            .build()
+                            .call();
 
-                hooksService.triggerHook(repositoryDao, RepositoryDao.RepositoryHookType.PUSH, commits);
-            } catch (GitException e) {
+                    hooksService.asyncTriggerWebHooks(repositoryDao, RepositoryDao.RepositoryHookType.GIT_PUSH, commits);
+                } catch (GitException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try {
+                Optional<InputStream> pipelineInputStream = ciService.findPipelineScript(newTree, repositoryDao);
+                if (pipelineInputStream.isEmpty()) {
+                    return;
+                }
+
+                log.info("Found '.pipeline.groovy' file, executing ci...");
+                ciService.runGroovyPipeline(repositoryDao, pipelineInputStream.get());
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });

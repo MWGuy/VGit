@@ -4,6 +4,7 @@ import com.mwguy.vgit.dao.RepositoryDao;
 import com.mwguy.vgit.repositories.RepositoriesRepository;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.Date;
 public class HooksService {
     private final RepositoriesRepository repositoriesRepository;
     private final RestTemplate restTemplate = new RestTemplate();
+    private final TaskExecutor taskExecutor;
 
     @Getter
     @Setter
@@ -23,12 +25,14 @@ public class HooksService {
     @AllArgsConstructor
     public static class HookRequestBody<T> {
         private RepositoryDao.RepositoryHookType type;
+        private Date date;
         private String repository;
         private T payload;
     }
 
-    public HooksService(RepositoriesRepository repositoriesRepository) {
+    public HooksService(RepositoriesRepository repositoriesRepository, TaskExecutor taskExecutor) {
         this.repositoriesRepository = repositoriesRepository;
+        this.taskExecutor = taskExecutor;
     }
 
     public Boolean hasHooks(RepositoryDao repositoryDao, RepositoryDao.RepositoryHookType type) {
@@ -37,7 +41,7 @@ public class HooksService {
         }
 
         for (RepositoryDao.RepositoryHook hook : repositoryDao.getHooks()) {
-            if (hook.getType().equals(type)) {
+            if (hook.getTypes().contains(type)) {
                 return true;
             }
         }
@@ -45,11 +49,15 @@ public class HooksService {
         return false;
     }
 
+    public <T> void asyncTriggerWebHooks(RepositoryDao repositoryDao, RepositoryDao.RepositoryHookType type, T payload) {
+        taskExecutor.execute(() -> triggerWebHooks(repositoryDao, type, payload));
+    }
+
     @SneakyThrows
-    public <T> void triggerHook(RepositoryDao repositoryDao, RepositoryDao.RepositoryHookType type, T payload) {
+    public <T> void triggerWebHooks(RepositoryDao repositoryDao, RepositoryDao.RepositoryHookType type, T payload) {
         for (RepositoryDao.RepositoryHook hook : repositoryDao.getHooks()) {
-            if (hook.getType().equals(type)) {
-                HookRequestBody<T> body = new HookRequestBody<>(type, repositoryDao.toRepositoryPath(), payload);
+            if (hook.getTypes().contains(type)) {
+                HookRequestBody<T> body = new HookRequestBody<>(type, new Date(), repositoryDao.toRepositoryPath(), payload);
                 try {
                     ResponseEntity<Void> responseEntity = restTemplate.postForEntity(hook.getUrl().toURI(), body, Void.class);
                     hook.getRequestLog().add(new RepositoryDao.RepositoryHookRequestLogEntity(responseEntity.getStatusCode(), new Date()));

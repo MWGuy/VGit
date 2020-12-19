@@ -17,6 +17,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +55,10 @@ public class RepositoryDao {
     }
 
     public enum RepositoryHookType {
-        PUSH
+        GIT_PUSH,
+
+        PIPELINE_FAILED,
+        PIPELINE_PASSED
     }
 
     @Getter
@@ -81,7 +85,7 @@ public class RepositoryDao {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RepositoryHook {
-        private RepositoryHookType type;
+        private Set<RepositoryHookType> types;
         private URL url;
         private Set<RepositoryHookRequestLogEntity> requestLog;
     }
@@ -156,6 +160,7 @@ public class RepositoryDao {
     }
 
     @Data
+    @Builder
     public static class GitTreeInput {
         private String path;
         private String object;
@@ -182,14 +187,16 @@ public class RepositoryDao {
     }
 
     public String getBlob(String object) throws GitException, IOException {
+        return Base64.encodeBase64String(getBlobAsInputStream(object).readAllBytes());
+    }
+
+    public InputStream getBlobAsInputStream(String object) throws GitException {
         Git git = VGitApplication.context.getBean(Git.class);
-        return Base64.encodeBase64String(git.catFile()
+        return git.catFile()
                 .repository(toGitRepository())
                 .type(GitTreeEntry.GitObjectType.BLOB)
                 .object(object)
                 .build()
-                .call()
-                .readAllBytes()
-        );
+                .call();
     }
 }

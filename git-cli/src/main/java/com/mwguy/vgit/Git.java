@@ -15,6 +15,10 @@ public class Git {
         return GitInitCommand.builder();
     }
 
+    public GitCloneCommand.GitCloneCommandBuilder clone() {
+        return GitCloneCommand.builder();
+    }
+
     public GitLogCommand.GitLogCommandBuilder log() {
         return GitLogCommand.builder();
     }
