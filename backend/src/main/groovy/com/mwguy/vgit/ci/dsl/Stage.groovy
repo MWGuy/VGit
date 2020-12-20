@@ -3,15 +3,18 @@ package com.mwguy.vgit.ci.dsl
 import groovy.transform.NamedParam
 
 class Stage {
-    public Map<String, Job> jobs = [:]
+    public String name
+    public List<Job> jobs = []
+
+    Stage(String name) {
+        this.name = name
+    }
 
     void job(@NamedParam("name") String name, @DelegatesTo(Job) Closure closure) {
-        def job = new Job();
-
-        closure.delegate = job
+        closure.delegate = new Job(name)
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure.call()
 
-        jobs.put(name, job)
+        jobs << (closure.delegate as Job)
     }
 }
