@@ -35,7 +35,7 @@ public class VGitAuthenticationManager implements AuthenticationManager {
             return this.authenticateBearerBasic((BearerTokenAuthenticationToken) authentication);
         }
 
-        throw new BadCredentialsException("Bad Credentials");
+        throw new BadCredentialsException(PROVIDED_INVALID_CREDENTIALS);
     }
 
     public Authentication authenticateHttpBasic(UsernamePasswordAuthenticationToken authentication)

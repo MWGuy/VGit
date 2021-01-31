@@ -16,6 +16,7 @@ public interface VGitConstants {
     String PROVIDED_INVALID_PASSWORD = "Provided invalid password";
     String PROVIDED_INVALID_TOKEN = "Provided invalid token";
     String PROVIDED_INVALID_CREDENTIALS = "Invalid username or password";
+    String PROVIDED_INVALID_REPOSITORY_NAME = "Invalid repository name";
     String UNAUTHORIZED_MESSAGE = "Unauthorized";
     String GIT_HOOK_TRIGGER = "git-hook-trigger";
 }

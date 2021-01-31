@@ -53,6 +53,10 @@ public class RepositoriesService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, NAMESPACE_PERMISSION_DENIED);
         }
 
+        if (input.getPath().getName().length() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, PROVIDED_INVALID_REPOSITORY_NAME);
+        }
+
         if (repositoriesRepository.findByPath_NamespaceAndPath_Name(
                 input.getPath().getNamespace(),
                 input.getPath().getName()
