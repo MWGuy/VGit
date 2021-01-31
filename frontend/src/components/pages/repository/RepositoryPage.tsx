@@ -1,7 +1,7 @@
 import React from "react";
 import BasicPage from "../BasicPage";
 import {gql, useQuery} from "@apollo/client";
-import {Breadcrumbs, Card, Menu, MenuItem, NonIdealState, Spinner} from "@blueprintjs/core";
+import {Breadcrumbs, Card, InputGroup, Menu, MenuItem, NonIdealState, Spinner} from "@blueprintjs/core";
 import NotFoundPage from "../nonIdealStates/NotFoundPage";
 import RepositoryCommitsPage from "./RepositoryCommitsPage";
 import { useHistory } from "react-router-dom";
@@ -142,6 +142,9 @@ export default (props: any) => {
                 }}>
                     <Breadcrumbs items={items}/>
                 </Card>
+                <InputGroup fill readOnly style={{
+                    marginBottom: 12
+                }} value={window.location.protocol + "//" + window.location.host + "/" + data.repositoryByPath.path.namespace + "/" + data.repositoryByPath.path.name + ".git"}/>
                 <Card>
                     {getCurrentRepositorySubpageComponentOrGetFallback(item, {
                         path: {
