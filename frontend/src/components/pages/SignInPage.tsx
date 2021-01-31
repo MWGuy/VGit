@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import CredentialsInputPage from "./CredentialsInputPage";
-import {Button, ButtonGroup, Callout, FormGroup, InputGroup, Intent} from "@blueprintjs/core";
+import {Button, ButtonGroup, Callout, Classes, FormGroup, InputGroup, Intent} from "@blueprintjs/core";
 import {apolloClient} from "../../App";
 import {gql} from "@apollo/client";
 import {Redirect, useHistory} from "react-router-dom";

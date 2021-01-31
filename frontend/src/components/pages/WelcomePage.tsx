@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import BasicPage from "./BasicPage";
 import UnauthorizedPage from "./nonIdealStates/UnauthorizedPage";
 import {Alignment, Button, Card, Icon, Intent, NavbarGroup, NonIdealState, Spinner, Tag} from "@blueprintjs/core";
@@ -6,6 +6,7 @@ import {Alignment, Button, Card, Icon, Intent, NavbarGroup, NonIdealState, Spinn
 import {gql, useQuery} from "@apollo/client";
 import CommitInfo, {CommitInfoType} from "../CommitInfo";
 import {Link} from "react-router-dom";
+import NewRepositoryOverlay from "../dialogs/NewRepositoryDialog";
 
 const GET_USER_REPOSITORIES = gql`
     query {
@@ -43,10 +44,16 @@ export default () => {
     const {data} = useQuery(GET_USER_REPOSITORIES);
 
     const NewRepositoryButton = () => {
-        return <Button
-            icon="plus"
-            intent={Intent.SUCCESS}
-        >New repository</Button>
+        const [overlayOpened, setOverlayOpened] = useState<boolean>(false);
+
+        return <React.Fragment>
+            <NewRepositoryOverlay isOpen={overlayOpened} onClose={() => setOverlayOpened(false)}/>
+            <Button
+                icon="plus"
+                intent={Intent.SUCCESS}
+                onClick={() => setOverlayOpened(!overlayOpened)}
+            >New repository</Button>
+        </React.Fragment>
     }
 
     return <BasicPage>
