@@ -79,7 +79,6 @@ export default (props: IDialogProps) => {
                 <FormGroup
                     disabled={loading}
                     label={"Description"}
-                    labelInfo={"(required)"}
                 >
                     <TextArea
                         fill
