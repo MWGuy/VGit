@@ -25,8 +25,7 @@ interface SignUpHandleOptions {
     setLoading(loading: boolean): void;
 }
 
-function handleSubmit(options: SignUpHandleOptions) {
-    return (event: any) => {
+function handleSubmit(options: SignUpHandleOptions, event: any) {
         event.preventDefault();
         apolloClient.mutate({
             mutation: REGISTER_USER,
@@ -48,7 +47,7 @@ function handleSubmit(options: SignUpHandleOptions) {
             options.setError(error.toString());
             options.setLoading(false);
         });
-    }
+    
 }
 
 export default () => {
@@ -71,9 +70,7 @@ export default () => {
             onClick={() => setError(undefined)}
         >{error}</Callout>}
     >
-        <form onSubmit={handleSubmit({
-            history, userName, realName, password, email, setError, setLoading
-        })}>
+        <form onSubmit={console.debug}>
             <FormGroup>
                 <InputGroup
                     disabled={loading}
@@ -113,7 +110,12 @@ export default () => {
                     loading={loading}
                     intent={Intent.SUCCESS}
                     type="submit"
-                    onClick={() => setLoading(!loading)}
+                    onClick={(e: any) => {
+                        setLoading(true);
+                        handleSubmit({
+                            history, userName, realName, password, email, setError, setLoading
+                        }, e)
+                    }}
                 >Sign Up</Button>
             </ButtonGroup>
         </form>
