@@ -1,0 +1,32 @@
+services:
+  db:
+    image: mongo
+    restart: unless-stopped
+    networks:
+      db:
+        aliases:
+          - mongo
+    volumes:
+      - mongo_data:/data/db
+
+  vgit:
+    restart: unless-stopped
+    image: vgit:latest
+    networks:
+      db:
+    depends_on:
+      - db
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/vgit
+    volumes:
+      - vgit_data:/data
+    ports:
+      - 8080:8080
+
+
+networks:
+  db:
+
+volumes:
+  mongo_data:
+  vgit_data:
