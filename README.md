@@ -15,3 +15,9 @@ Simple git server written with java
 4. Install mongodb and provide connection uri (with collection) to MONGODB_URI envirement variable. Defualt: ``mongodb://localhost:27017/vgit``
 5. Create new folder for your git repositories and provide to GIT_BASE_DIRECTORY envirement variable
 6. Run compiled distribution using ``java -jar path/to/file.jar`` command. Then open ``localhost:8080``
+
+## Building and running with docker
+
+1. Build vgit image ``docker build . -t vgit:latest``
+2. Deploy vgit and mongodb with docker-compose ``docker-compose up -d``
+3. Open ``localhost:8080``
